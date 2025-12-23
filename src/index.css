@@ -1,74 +1,95 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap");
 @import "tailwindcss";
-@source "../index.html";
-@source "./**/*.{js,ts,jsx,tsx}";
 
 
-
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Simple safe globals for Tailwind v4 projects */
+:root{
+  --blue-rgb: 237 245 255;
+  --green-rgb: 125 161 35;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+html,body{height:100%;}
+body{
+  margin:0;
+  font-family: "Work Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Light-mode tweak */
+@media (prefers-color-scheme: light){
+  :root{ color:#213547; }
+  body{ background-color:#ffffff; }
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* small, straightforward helper classes (avoid @apply to prevent v4 issues) */
+.max-container{
+  max-width:64rem; /* ~5xl */
+  margin-left:auto;
+  margin-right:auto;
+  padding-left:2rem;
+  padding-right:2rem;
+  padding-bottom:3rem;
+  min-height:calc(100vh - 80px);
+  padding-top:126px;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.head-text{ font-size:1.875rem; font-weight:600; }
+@media(min-width:640px){ .head-text{ font-size:3rem; line-height:1.05; } }
+
+.subhead-text{ font-size:1.125rem; font-weight:600; }
+@media(min-width:640px){ .subhead-text{ font-size:1.75rem; } }
+
+/* gradient text helper */
+.blue-gradient_text{
+  background:linear-gradient(90deg,#00c6ff,#0072ff);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
 }
+
+/* small button helper (keeps look but avoids complex @apply) */
+.btn{
+  color:#fff;
+  background:linear-gradient(90deg,#00c6ff,#0072ff);
+  border-radius:0.5rem;
+  padding:0.625rem 1.25rem;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* header layout: keep simple CSS so header is a flex row */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:1rem 2rem;
+  max-width:80rem;
+  margin-left:auto;
+  margin-right:auto;
+  position:relative;
+  z-index:10;
+}
+
+/* footer / misc helpers kept as plain CSS */
+.footer{ max-width:80rem; margin:0 auto; padding:0 2rem 1.5rem; display:flex; flex-direction:column; gap:1.75rem; }
+
+.cta{ display:flex; gap:1.5rem; flex-direction:column; }
+@media(min-width:768px){ .cta{ flex-direction:row; } }
+
+/* glassmorphism + blocks (unchanged, plain CSS) */
+.glassmorphism{ background: rgba(8,116,239,0.07); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius:10px; border:1px solid rgba(255,255,255,0.18); }
+
+.logo{ border-radius:8.889px; background:#fff; box-shadow:0px 10px 35px -4px rgba(67,83,255,0.15), 0px 1.5px 4px -1px rgba(67,83,255,0.2); }
+
+.block-container{ position:relative; transition:250ms; perspective:500px; }
+.block-container .btn-back{ position:absolute; inset:0; z-index:-1; width:inherit; height:inherit; transition:250ms; transform-style:preserve-3d; transform-origin:bottom right; transform:rotateZ(15deg); will-change:transform; box-shadow:16px 0 40px #e4e4e4; }
+
+/* neo-brutalism colors */
+.neo-brutalism-blue{ background:#2b77e7; position:relative; border-radius:10px; border:#2b77e7; box-shadow:0.6vmin 0.6vmin #336cc1, 1vmin 1vmin #0092db; }
+.neo-brutalism-white{ background:#fff; border:#fff; box-shadow:0.6vmin 0.6vmin #fff, 1vmin 1vmin #d2e4ff; }
+
+/* small Poppins helper */
+.font-poppins{ font-family:'Poppins', sans-serif; }
