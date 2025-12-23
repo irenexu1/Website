@@ -8,14 +8,16 @@ Title: Littlest Tokyo Sunset - 3D Editor Challenge
 
 import React, { useRef } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei'
+import tokyoScene from '../assets/3d/littlest_tokyo_sunset_-_3d_editor_challenge.glb'
 import { a } from '@react-spring/three'
 
 const tokyo = (props) => {
   const group = useRef()
   const { nodes, materials, animations } = useGLTF(
-    '/littlest_tokyo_sunset_-_3d_editor_challenge.glb'
+    tokyoScene
   )
   const { actions } = useAnimations(animations, group)
+
   return (
     <a.group ref={group} {...props} dispose={null}>
       <group name="Sketchfab_Scene">
