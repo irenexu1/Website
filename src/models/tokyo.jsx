@@ -5,21 +5,132 @@ License: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 Source: https://sketchfab.com/3d-models/littlest-tokyo-sunset-3d-editor-challenge-6fb1409c2459463ea8a5781dbf31a0a2
 Title: Littlest Tokyo Sunset - 3D Editor Challenge
 */
-
-import React, { useRef } from 'react'
+import React, { useLayoutEffect, useRef } from 'react'
+import { useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, useAnimations } from '@react-three/drei'
+import * as THREE from 'three'
 import tokyoScene from '../assets/3d/littlest_tokyo_sunset_-_3d_editor_challenge.glb'
 import { a } from '@react-spring/three'
 
-const tokyo = (props) => {
-  const group = useRef()
+
+const tokyo = ({ isRotating, setIsRotating, ...props}) => {
+  const pivotRef = useRef()
+  const modelRef = useRef()
+  const initialPivotPos = useRef(null)
+  const hitboxRef = useRef(null)
+  const { camera, viewport } = useThree()
   const { nodes, materials, animations } = useGLTF(
     tokyoScene
   )
-  const { actions } = useAnimations(animations, group)
+  const lastX = useRef(0)
+  const rotationSpeed = useRef(0)
+  const dampingFactor = 0.9 // lower = stops faster
+
+  const handlePointerDown = (e) => {
+    e.stopPropagation()
+    e.target.setPointerCapture(e.pointerId)
+    setIsRotating?.(true)
+    lastX.current = e.clientX
+  }
+
+  const handlePointerUp = (e) => {
+    e.stopPropagation()
+    isDragging.current = false
+    setIsRotating?.(false)
+  }
+
+  const handlePointerMove = (e) => {
+    if (!isRotating || !pivotRef.current) return
+    e.stopPropagation()
+
+    const deltaX = e.clientX - lastX.current
+    lastX.current = e.clientX
+
+    // Follow the Island pattern: update rotation directly while dragging,
+    // and store a per-frame rotationSpeed that will be damped when released.
+    const rotationDelta = (deltaX / window.innerWidth) * Math.PI * 0.7
+    pivotRef.current.rotation.y += rotationDelta
+    rotationSpeed.current = rotationDelta
+  }
+
+  useAnimations(animations, modelRef)
+
+  useLayoutEffect(() => {
+    if (!pivotRef.current || !modelRef.current) return
+
+    if (!initialPivotPos.current) {
+      initialPivotPos.current = pivotRef.current.position.clone()
+    }
+
+    // Ensure world matrices are up to date before computing bounds.
+    pivotRef.current.updateMatrixWorld(true)
+
+    // Set the pivot to the model's "music box" axis:
+    // center in X/Z, but at the bottom in Y, so it spins in place.
+    const box = new THREE.Box3().setFromObject(modelRef.current)
+    if (box.isEmpty()) return
+
+    const center = new THREE.Vector3()
+    box.getCenter(center)
+    const pivotWorld = new THREE.Vector3(center.x, box.min.y, center.z)
+
+    // Convert the desired pivot point (world) into the pivot group's local space.
+    const pivotLocal = pivotRef.current.worldToLocal(pivotWorld.clone())
+
+    // Keep the model visually in the same place by applying equal/opposite offsets:
+    // move the pivot to the pivot point, and move the model back.
+    pivotRef.current.position.copy(initialPivotPos.current).add(pivotLocal)
+    modelRef.current.position.copy(pivotLocal).multiplyScalar(-1)
+
+    pivotRef.current.updateMatrixWorld(true)
+
+    // Hitbox: full viewport width at the model depth, and full model height.
+    if (hitboxRef.current) {
+      const height = Math.max(0.001, box.max.y - box.min.y)
+      const depth = Math.max(0.5, box.max.z - box.min.z)
+
+      // Viewport size in world units at the model's depth.
+      const vpAtModel = viewport.getCurrentViewport(camera, pivotWorld)
+      hitboxRef.current.scale.set(vpAtModel.width, height, depth)
+
+      // Center vertically on the model (so it covers entire height)
+      hitboxRef.current.position.set(0, height / 2, 0)
+    }
+  }, [nodes])
+
+  useFrame((_, delta) => {
+    if (!pivotRef.current) return
+
+    if (!isRotating) {
+      // Island-style damping: decay the last drag speed until it stops.
+      const decay = Math.pow(dampingFactor, delta * 60)
+      rotationSpeed.current *= decay
+      if (Math.abs(rotationSpeed.current) < 0.0001) rotationSpeed.current = 0
+
+      pivotRef.current.rotation.y += rotationSpeed.current
+    }
+  })
+
 
   return (
-    <a.group ref={group} {...props} dispose={null}>
+    <a.group
+      ref={pivotRef}
+      {...props}
+      dispose={null}
+    >
+      <mesh
+        ref={hitboxRef}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onPointerMove={handlePointerMove}
+      >
+        <boxGeometry args={[1, 1, 1]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+
+      <group ref={modelRef}>
       <group name="Sketchfab_Scene">
         <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, 0]} scale={0.013}>
           <group name="root">
@@ -1015,6 +1126,7 @@ const tokyo = (props) => {
             </group>
           </group>
         </group>
+      </group>
       </group>
     </a.group>
   )
