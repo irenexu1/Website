@@ -8,6 +8,7 @@ Title: Littlest Tokyo Sunset - 3D Editor Challenge
 
 import React, { useRef } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei'
+import { a } from '@react-spring/three'
 
 const tokyo = (props) => {
   const group = useRef()
@@ -16,7 +17,7 @@ const tokyo = (props) => {
   )
   const { actions } = useAnimations(animations, group)
   return (
-    <group ref={group} {...props} dispose={null}>
+    <a.group ref={group} {...props} dispose={null}>
       <group name="Sketchfab_Scene">
         <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, 0]} scale={0.013}>
           <group name="root">
@@ -1013,10 +1014,8 @@ const tokyo = (props) => {
           </group>
         </group>
       </group>
-    </group>
+    </a.group>
   )
 }
-
-useGLTF.preload('/littlest_tokyo_sunset_-_3d_editor_challenge.glb')
 
 export default tokyo;
