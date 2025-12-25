@@ -17,16 +17,16 @@ import tokyoScene from '../assets/3d/littlest_tokyo_sunset_-_3d_editor_challenge
 
 
 
-const tokyo = ({ isRotating, setIsRotating, ...props}) => {
+const tokyo = ({ isRotating, setIsRotating, setCurrentStage, ...props}) => {
   const tokyoRef = useRef(); // for the actual model to persist
 
-  const pivotRef = useRef(); // for recentering since model didnt load center well
+  const groupRef = useRef(); // for recentering since model didnt load center well
   //const initialPivotPos = useRef(null)
 
   const hitboxRef = useRef(); // for easier interactions and the big hitbox
 
 
-  const { gl, camera, viewport } = useThree();
+  const { camera, viewport } = useThree();
   const { nodes, materials, animations } = useGLTF(tokyoScene);
 
   // for the last mouse x position
@@ -40,48 +40,51 @@ const tokyo = ({ isRotating, setIsRotating, ...props}) => {
   //  handle the pointer down event  
   const handlePointerDown = (e) => {
     e.stopPropagation();
-    e.preventDefault();
+    //e.preventDefault();
     setIsRotating(true);
     // works even if you move off the mesh
-    e.target.setPointerCapture(e.pointerId);
+    //e.target.setPointerCapture(e.pointerId);
 
-    lastX.current = clientX
+    //const clientX = e.clientX;
+    lastX.current = e.clientX
   };
 
 
   // Handle pointer (mouse or touch) up event
   const handlePointerUp = (e) => {
     e.stopPropagation();
-    e.preventDefault();
+    //e.preventDefault();
     setIsRotating(false);
     // release capture (safe even if not captured
-    try { e.target.releasePointerCapture(e.pointerId); } catch {}
+    //try { e.target.releasePointerCapture(e.pointerId); } catch {}
   };
 
 
   // Handle pointer (mouse or touch) move event
   const handlePointerMove = (e) => {
     e.stopPropagation();
-    e.preventDefault();
+    //e.preventDefault();
 
     if (!isRotating) return;
-    if (!pivotRef.current) return;
+    if (!groupRef.current) return;
 
-      // If rotation is enabled, calculate the change in clientX position
+    // If rotation is enabled, calculate the change in clientX position
     const clientX = e.clientX;
     const delta = (clientX - lastX.current) / viewport.width;
 
-    pivotRef.current.rotation.y += delta * 0.01 * Math.PI;
+    groupRef.current.rotation.y += delta * 0.01 * Math.PI;
 
     lastX.current = clientX
     rotationSpeed.current = delta * 0.01 * Math.PI;
 
     }
-  }
+  
 
 
   // This function is called on each frame update
   useFrame(() => {
+    if (!groupRef.current) return; 
+
     // If not rotating, apply damping to slow down the rotation (smoothly)
     if (!isRotating) {
       // Apply damping factor
@@ -92,10 +95,10 @@ const tokyo = ({ isRotating, setIsRotating, ...props}) => {
         rotationSpeed.current = 0;
       }
 
-      pivotRef.current.rotation.y += rotationSpeed.current;
+      groupRef.current.rotation.y += rotationSpeed.current;
     } else {
       // When rotating, determine the current stage based on island's orientation
-      const rotation = pivotRef.current.rotation.y;
+      const rotation = groupRef.current.rotation.y;
 
       /**
        * Normalize the rotation value to ensure it stays within the range [0, 2 * Math.PI].
@@ -140,51 +143,76 @@ const tokyo = ({ isRotating, setIsRotating, ...props}) => {
   useAnimations(animations, tokyoRef)
 
   useLayoutEffect(() => {
-    if (!pivotRef.current || !tokyoRef.current) return
+    if (!tokyoRef.current || !hitboxRef.current || !groupRef.current) return;
 
-    // make sure matrices are current
-    pivotRef.current.updateMatrixWorld(true)
+    // Bounding box of the model (world space)
+    const box = new THREE.Box3().setFromObject(tokyoRef.current);
+    if (box.isEmpty()) return;
 
-    // Set the pivot to the model's "music box" axis:
-    // center in X/Z, but at the bottom in Y, so it spins in place.
-    const box = new THREE.Box3().setFromObject(tokyoRef.current)
-    if (box.isEmpty()) return
+    const size = box.getSize(new THREE.Vector3());     // size.x/y/z
+  const centerWorld = box.getCenter(new THREE.Vector3());
 
-    const center = box.getCenter(new THREE.Vector3())
-    const pivotWorld = new THREE.Vector3(center.x, box.min.y, center.z)
+    // Viewport size in world units at the model's depth
+    const vp = viewport.getCurrentViewport(camera, centerWorld);
 
-    // Convert the desired pivot point (world) into the pivot group's local space.
-    const pivotLocal = pivotRef.current.worldToLocal(pivotWorld.clone())
+    const hitboxWidth = vp.width;          // full screen width
+    const hitboxHeight = size.y;           // full model height
+    const hitboxDepth = Math.max(1, size.z * 0.6); // tweakable
 
-    // Keep the model visually in the same place by applying equal/opposite offsets:
-    // move the pivot to the pivot point, and move the model back.
-    //pivotRef.current.position.copy(initialPivotPos.current).add(pivotLocal)
-    //tokyoRef.current.position.copy(pivotLocal).multiplyScalar(-1)
-    
-    // only move the model; don't move pivotRef at all
-    tokyoRef.current.position.copy(pivotLocal).multiplyScalar(-1)
+    // Scale the unit cube into your desired rectangle
+    hitboxRef.current.scale.set(hitboxWidth, hitboxHeight, hitboxDepth);
 
-    pivotRef.current.updateMatrixWorld(true)
+    // Put the hitbox center at the model center (convert world -> group local)
+    const centerLocal = groupRef.current.worldToLocal(centerWorld.clone());
+    hitboxRef.current.position.copy(centerLocal);
+  }, [camera, viewport]);
 
-    // Hitbox: full viewport width at the model depth, and full model height.
-    if (hitboxRef.current) {
-      const height = Math.max(0.001, box.max.y - box.min.y)
-      const depth = Math.max(0.5, box.max.z - box.min.z)
-
-      // Viewport size in world units at the model's depth.
-      const vpAtModel = viewport.getCurrentViewport(camera, pivotWorld)
-      hitboxRef.current.scale.set(vpAtModel.width, height, depth)
-
-      // Center vertically on the model (so it covers entire height)
-      hitboxRef.current.position.set(0, height / 2, 0)
-    }
-  }, [nodes, camera, viewport])
+//  useLayoutEffect(() => {
+//    if (!pivotRef.current || !tokyoRef.current) return
+//
+//    // make sure matrices are current
+//    pivotRef.current.updateMatrixWorld(true)
+//
+//    // Set the pivot to the model's "music box" axis:
+//    // center in X/Z, but at the bottom in Y, so it spins in place.
+//    const box = new THREE.Box3().setFromObject(tokyoRef.current)
+//    if (box.isEmpty()) return
+//
+//    const center = box.getCenter(new THREE.Vector3())
+//    const pivotWorld = new THREE.Vector3(center.x, box.min.y, center.z)
+//
+//    // Convert the desired pivot point (world) into the pivot group's local space.
+//    const pivotLocal = pivotRef.current.worldToLocal(pivotWorld.clone())
+//
+//    // Keep the model visually in the same place by applying equal/opposite offsets:
+//    // move the pivot to the pivot point, and move the model back.
+//    //pivotRef.current.position.copy(initialPivotPos.current).add(pivotLocal)
+//    //tokyoRef.current.position.copy(pivotLocal).multiplyScalar(-1)
+//    
+//    // only move the model; don't move pivotRef at all
+//    tokyoRef.current.position.copy(pivotLocal).multiplyScalar(-1)
+//
+//    pivotRef.current.updateMatrixWorld(true)
+//
+//    // Hitbox: full viewport width at the model depth, and full model height.
+//    if (hitboxRef.current) {
+//      const height = Math.max(0.001, box.max.y - box.min.y)
+//      const depth = Math.max(0.5, box.max.z - box.min.z)
+//
+//      // Viewport size in world units at the model's depth.
+//      const vpAtModel = viewport.getCurrentViewport(camera, pivotWorld)
+//      hitboxRef.current.scale.set(vpAtModel.width, height, depth)
+//
+//      // Center vertically on the model (so it covers entire height)
+//      hitboxRef.current.position.set(0, height / 2, 0)
+//    }
+//  }, [nodes, camera, viewport])
 
 
 
   return (
     <a.group
-      ref={pivotRef}
+      ref={groupRef}
       {...props}
       dispose={null}
     >
