@@ -17,7 +17,7 @@ import tokyoScene from '../assets/3d/littlest_tokyo_sunset_-_3d_editor_challenge
 
 
 
-const tokyo = ({ isRotating, setIsRotating, setCurrentStage, ...props}) => {
+const Tokyo = ({ isRotating, setIsRotating, setCurrentStage = () => {}, ...props}) => {
   const tokyoRef = useRef(); // for the actual model to persist
 
   const groupRef = useRef(); // for recentering since model didnt load center well
@@ -1230,4 +1230,4 @@ const tokyo = ({ isRotating, setIsRotating, setCurrentStage, ...props}) => {
   )
 }
 
-export default tokyo;
+export default Tokyo;
