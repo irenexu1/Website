@@ -5,58 +5,142 @@ License: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 Source: https://sketchfab.com/3d-models/littlest-tokyo-sunset-3d-editor-challenge-6fb1409c2459463ea8a5781dbf31a0a2
 Title: Littlest Tokyo Sunset - 3D Editor Challenge
 */
-import React, { useLayoutEffect, useRef } from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
-import { useGLTF, useAnimations } from '@react-three/drei'
-import * as THREE from 'three'
-import tokyoScene from '../assets/3d/littlest_tokyo_sunset_-_3d_editor_challenge.glb'
+
 import { a } from '@react-spring/three'
+import { useLayoutEffect, useRef } from 'react'
+import { useGLTF, useAnimations } from '@react-three/drei'
+import { useFrame, useThree } from '@react-three/fiber'
+
+import * as THREE from 'three'
+
+import tokyoScene from '../assets/3d/littlest_tokyo_sunset_-_3d_editor_challenge.glb'
+
 
 
 const tokyo = ({ isRotating, setIsRotating, ...props}) => {
-  const pivotRef = useRef()
-  const modelRef = useRef()
-  const initialPivotPos = useRef(null)
-  const hitboxRef = useRef(null)
-  const { camera, viewport } = useThree()
-  const { nodes, materials, animations } = useGLTF(
-    tokyoScene
-  )
-  const lastX = useRef(0)
+  const tokyoRef = useRef(); // for the actual model to persist
+
+  const pivotRef = useRef(); // for recentering since model didnt load center well
+  //const initialPivotPos = useRef(null)
+
+  const hitboxRef = useRef(); // for easier interactions and the big hitbox
+
+
+  const { gl, camera, viewport } = useThree();
+  const { nodes, materials, animations } = useGLTF(tokyoScene);
+
+  // for the last mouse x position
+  const lastX = useRef(0);
+  // for rotation speed
   const rotationSpeed = useRef(0)
-  const dampingFactor = 0.9 // lower = stops faster
+  // damping factor to control the spinning
+  const dampingFactor = 0.9; // lower = stops faster
 
+
+  //  handle the pointer down event  
   const handlePointerDown = (e) => {
-    e.stopPropagation()
-    e.target.setPointerCapture(e.pointerId)
-    setIsRotating?.(true)
-    lastX.current = e.clientX
-  }
+    e.stopPropagation();
+    e.preventDefault();
+    setIsRotating(true);
+    // works even if you move off the mesh
+    e.target.setPointerCapture(e.pointerId);
 
+    lastX.current = clientX
+  };
+
+
+  // Handle pointer (mouse or touch) up event
   const handlePointerUp = (e) => {
-    e.stopPropagation()
-    isDragging.current = false
-    setIsRotating?.(false)
-  }
+    e.stopPropagation();
+    e.preventDefault();
+    setIsRotating(false);
+    // release capture (safe even if not captured
+    try { e.target.releasePointerCapture(e.pointerId); } catch {}
+  };
 
+
+  // Handle pointer (mouse or touch) move event
   const handlePointerMove = (e) => {
-    if (!isRotating || !pivotRef.current) return
-    e.stopPropagation()
+    e.stopPropagation();
+    e.preventDefault();
 
-    const deltaX = e.clientX - lastX.current
-    lastX.current = e.clientX
+    if (!isRotating) return;
+    if (!pivotRef.current) return;
 
-    // Follow the Island pattern: update rotation directly while dragging,
-    // and store a per-frame rotationSpeed that will be damped when released.
-    const rotationDelta = (deltaX / window.innerWidth) * Math.PI * 0.7
-    pivotRef.current.rotation.y += rotationDelta
-    rotationSpeed.current = rotationDelta
+      // If rotation is enabled, calculate the change in clientX position
+    const clientX = e.clientX;
+    const delta = (clientX - lastX.current) / viewport.width;
+
+    pivotRef.current.rotation.y += delta * 0.01 * Math.PI;
+
+    lastX.current = clientX
+    rotationSpeed.current = delta * 0.01 * Math.PI;
+
+    }
   }
 
-  useAnimations(animations, modelRef)
+
+  // This function is called on each frame update
+  useFrame(() => {
+    // If not rotating, apply damping to slow down the rotation (smoothly)
+    if (!isRotating) {
+      // Apply damping factor
+      rotationSpeed.current *= dampingFactor;
+
+      // Stop rotation when speed is very small
+      if (Math.abs(rotationSpeed.current) < 0.001) {
+        rotationSpeed.current = 0;
+      }
+
+      tokyoRef.current.rotation.y += rotationSpeed.current;
+    } else {
+      // When rotating, determine the current stage based on island's orientation
+      const rotation = tokyoRef.current.rotation.y;
+
+      /**
+       * Normalize the rotation value to ensure it stays within the range [0, 2 * Math.PI].
+       * The goal is to ensure that the rotation value remains within a specific range to
+       * prevent potential issues with very large or negative rotation values.
+       *  Here's a step-by-step explanation of what this code does:
+       *  1. rotation % (2 * Math.PI) calculates the remainder of the rotation value when divided
+       *     by 2 * Math.PI. This essentially wraps the rotation value around once it reaches a
+       *     full circle (360 degrees) so that it stays within the range of 0 to 2 * Math.PI.
+       *  2. (rotation % (2 * Math.PI)) + 2 * Math.PI adds 2 * Math.PI to the result from step 1.
+       *     This is done to ensure that the value remains positive and within the range of
+       *     0 to 2 * Math.PI even if it was negative after the modulo operation in step 1.
+       *  3. Finally, ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) applies another
+       *     modulo operation to the value obtained in step 2. This step guarantees that the value
+       *     always stays within the range of 0 to 2 * Math.PI, which is equivalent to a full
+       *     circle in radians.
+       */
+      const normalizedRotation =
+        ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+      // Set the current stage based on the island's orientation
+      switch (true) {
+        case normalizedRotation >= 5.45 && normalizedRotation <= 5.85:
+          setCurrentStage(4);
+          break;
+        case normalizedRotation >= 0.85 && normalizedRotation <= 1.3:
+          setCurrentStage(3);
+          break;
+        case normalizedRotation >= 2.4 && normalizedRotation <= 2.6:
+          setCurrentStage(2);
+          break;
+        case normalizedRotation >= 4.25 && normalizedRotation <= 4.75:
+          setCurrentStage(1);
+          break;
+        default:
+          setCurrentStage(null);
+      }
+    }
+  });
+
+
+  useAnimations(animations, tokyoRef)
 
   useLayoutEffect(() => {
-    if (!pivotRef.current || !modelRef.current) return
+    if (!pivotRef.current || !tokyoRef.current) return
 
     if (!initialPivotPos.current) {
       initialPivotPos.current = pivotRef.current.position.clone()
@@ -67,7 +151,7 @@ const tokyo = ({ isRotating, setIsRotating, ...props}) => {
 
     // Set the pivot to the model's "music box" axis:
     // center in X/Z, but at the bottom in Y, so it spins in place.
-    const box = new THREE.Box3().setFromObject(modelRef.current)
+    const box = new THREE.Box3().setFromObject(tokyoRef.current)
     if (box.isEmpty()) return
 
     const center = new THREE.Vector3()
@@ -80,7 +164,7 @@ const tokyo = ({ isRotating, setIsRotating, ...props}) => {
     // Keep the model visually in the same place by applying equal/opposite offsets:
     // move the pivot to the pivot point, and move the model back.
     pivotRef.current.position.copy(initialPivotPos.current).add(pivotLocal)
-    modelRef.current.position.copy(pivotLocal).multiplyScalar(-1)
+    tokyoRef.current.position.copy(pivotLocal).multiplyScalar(-1)
 
     pivotRef.current.updateMatrixWorld(true)
 
@@ -98,18 +182,6 @@ const tokyo = ({ isRotating, setIsRotating, ...props}) => {
     }
   }, [nodes])
 
-  useFrame((_, delta) => {
-    if (!pivotRef.current) return
-
-    if (!isRotating) {
-      // Island-style damping: decay the last drag speed until it stops.
-      const decay = Math.pow(dampingFactor, delta * 60)
-      rotationSpeed.current *= decay
-      if (Math.abs(rotationSpeed.current) < 0.0001) rotationSpeed.current = 0
-
-      pivotRef.current.rotation.y += rotationSpeed.current
-    }
-  })
 
 
   return (
@@ -130,7 +202,7 @@ const tokyo = ({ isRotating, setIsRotating, ...props}) => {
         <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
 
-      <group ref={modelRef}>
+      <group ref={tokyoRef}>
       <group name="Sketchfab_Scene">
         <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, 0]} scale={0.013}>
           <group name="root">
