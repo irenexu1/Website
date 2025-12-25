@@ -92,10 +92,10 @@ const tokyo = ({ isRotating, setIsRotating, ...props}) => {
         rotationSpeed.current = 0;
       }
 
-      tokyoRef.current.rotation.y += rotationSpeed.current;
+      pivotRef.current.rotation.y += rotationSpeed.current;
     } else {
       // When rotating, determine the current stage based on island's orientation
-      const rotation = tokyoRef.current.rotation.y;
+      const rotation = pivotRef.current.rotation.y;
 
       /**
        * Normalize the rotation value to ensure it stays within the range [0, 2 * Math.PI].
@@ -142,11 +142,7 @@ const tokyo = ({ isRotating, setIsRotating, ...props}) => {
   useLayoutEffect(() => {
     if (!pivotRef.current || !tokyoRef.current) return
 
-    if (!initialPivotPos.current) {
-      initialPivotPos.current = pivotRef.current.position.clone()
-    }
-
-    // Ensure world matrices are up to date before computing bounds.
+    // make sure matrices are current
     pivotRef.current.updateMatrixWorld(true)
 
     // Set the pivot to the model's "music box" axis:
@@ -154,8 +150,7 @@ const tokyo = ({ isRotating, setIsRotating, ...props}) => {
     const box = new THREE.Box3().setFromObject(tokyoRef.current)
     if (box.isEmpty()) return
 
-    const center = new THREE.Vector3()
-    box.getCenter(center)
+    const center = box.getCenter(new THREE.Vector3())
     const pivotWorld = new THREE.Vector3(center.x, box.min.y, center.z)
 
     // Convert the desired pivot point (world) into the pivot group's local space.
@@ -163,7 +158,10 @@ const tokyo = ({ isRotating, setIsRotating, ...props}) => {
 
     // Keep the model visually in the same place by applying equal/opposite offsets:
     // move the pivot to the pivot point, and move the model back.
-    pivotRef.current.position.copy(initialPivotPos.current).add(pivotLocal)
+    //pivotRef.current.position.copy(initialPivotPos.current).add(pivotLocal)
+    //tokyoRef.current.position.copy(pivotLocal).multiplyScalar(-1)
+    
+    // only move the model; don't move pivotRef at all
     tokyoRef.current.position.copy(pivotLocal).multiplyScalar(-1)
 
     pivotRef.current.updateMatrixWorld(true)
@@ -180,7 +178,7 @@ const tokyo = ({ isRotating, setIsRotating, ...props}) => {
       // Center vertically on the model (so it covers entire height)
       hitboxRef.current.position.set(0, height / 2, 0)
     }
-  }, [nodes])
+  }, [nodes, camera, viewport])
 
 
 
