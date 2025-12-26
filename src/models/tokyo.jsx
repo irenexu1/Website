@@ -18,6 +18,7 @@ import tokyoScene from '../assets/3d/littlest_tokyo_sunset_-_3d_editor_challenge
 
 
 const Tokyo = ({ isRotating, setIsRotating, setCurrentStage = () => {}, ...props}) => {
+  const idleSpeed = useRef(0.25);
   const tokyoRef = useRef(); // for the actual model to persist
 
   const groupRef = useRef(); // for recentering since model didnt load center well
@@ -82,7 +83,7 @@ const Tokyo = ({ isRotating, setIsRotating, setCurrentStage = () => {}, ...props
 
 
   // This function is called on each frame update
-  useFrame(() => {
+  useFrame((state, delta) => {
     if (!groupRef.current) return; 
 
     // If not rotating, apply damping to slow down the rotation (smoothly)
@@ -95,7 +96,7 @@ const Tokyo = ({ isRotating, setIsRotating, setCurrentStage = () => {}, ...props
         rotationSpeed.current = 0;
       }
 
-      groupRef.current.rotation.y += rotationSpeed.current;
+      groupRef.current.rotation.y += rotationSpeed.current + idleSpeed.current * delta;
     } else {
       // When rotating, determine the current stage based on island's orientation
       const rotation = groupRef.current.rotation.y;

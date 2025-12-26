@@ -40,8 +40,6 @@ const Home = () => {
           <pointLight intensity={1.4} position={[-8, 6, -10]} color="#FF4FD8"  />
           <pointLight intensity={0.9} position={[6, 3, 8]} color="#7C5CFF"  />
           <hemisphereLight skyColor="#BFA7FF" groundColor="#241733" intensity={0.45} /> 
-        
-          {/* ✅ Stage spotlight (real light) */}
 
           <spotLight
             position={[0, 25, 0]}
