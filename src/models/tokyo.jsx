@@ -34,7 +34,7 @@ const Tokyo = ({ isRotating, setIsRotating, setCurrentStage = () => {}, ...props
   // for rotation speed
   const rotationSpeed = useRef(0)
   // damping factor to control the spinning
-  const dampingFactor = 0.9; // lower = stops faster
+  const dampingFactor = 0.95; // lower = stops faster
 
 
   //  handle the pointer down event  

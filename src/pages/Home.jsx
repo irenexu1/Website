@@ -2,7 +2,7 @@ import { useState, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import Loader from '../components/Loader'
 import Tokyo from '../models/tokyo'
-import Sky from '../models/Sky'
+
 
 const Home = () => {
   const [isRotating, setIsRotating] = useState(false);
@@ -39,7 +39,6 @@ const Home = () => {
           <pointLight intensity={0.3} position={[0, 5, 0]} />
           <hemisphereLight skyColor="#b1e1ff" groundColor="#000000" intensity={0.35} />
 
-          <Sky />
           <Tokyo 
             position={islandPosition}
             scale={islandScale}
