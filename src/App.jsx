@@ -7,18 +7,26 @@ import Navbar from './components/Navbar';
 const App = () => {
   return (
     <main className="bg-slate-950/100">
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/contact" element={<Contact />} />
-        </Routes>  
-      </Router> 
+      <Navbar />
+          <section id ="home" >
+            <Home />
+          </section>
+
+          <section id ="about" >
+            <About />
+          </section>
+
+          <section id ="projects" >
+            <Projects />
+          </section>
+
+          <section id ="contact" >
+            <Contact />
+          </section>
+
     </main>
-  )
-}
+  );
+};
 
 
 export default App
