@@ -48,8 +48,8 @@ const Home = () => {
             intensity={15}
             angle={0.15}
             penumbra={0.95}
-            distance={90}
-            decay={.15}
+            distance={70}
+            decay={.2}
             color="#FCDC95"
           />
 
