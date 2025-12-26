@@ -2,6 +2,7 @@ import { useState, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import Loader from '../components/Loader'
 import Tokyo from '../models/tokyo'
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 
 const Home = () => {
@@ -22,7 +23,6 @@ const Home = () => {
 
   const [islandScale, islandPosition, islandRotation] = adjustForScreenSize();
 
-
   return (
     <section className="w-full h-screen relative">
       <div className="absolute top-28 left-0 right-0 z-10 flex items-center justify-center">
@@ -31,13 +31,27 @@ const Home = () => {
 
       <Canvas
         className={`w-full h-screen bg-transparent ${isRotating ? 'cursor-grabbing' : 'cursor-grab'}`}
-        camera={{ near: 0.1, far: 1000 }}
-      >
+        camera={{ near: 0.1, far: 1000 }} >
+
         <Suspense fallback={<Loader />}>
-          <directionalLight intensity={0.3} position={[10, 10, 5]} />
-          <ambientLight intensity={0.4} />
-          <pointLight intensity={0.3} position={[0, 5, 0]} />
-          <hemisphereLight skyColor="#b1e1ff" groundColor="#000000" intensity={0.35} />
+
+          <ambientLight intensity={0.35} color="#E9D7FF" />
+          <directionalLight intensity={2.2} position={[10, 12, 6]} color="#C7A4FF" />
+          <pointLight intensity={1.4} position={[-8, 6, -10]} color="#FF4FD8"  />
+          <pointLight intensity={0.9} position={[6, 3, 8]} color="#7C5CFF"  />
+          <hemisphereLight skyColor="#BFA7FF" groundColor="#241733" intensity={0.45} /> 
+        
+          {/* ✅ Stage spotlight (real light) */}
+
+          <spotLight
+            position={[0, 25, 0]}
+            intensity={15}
+            angle={0.15}
+            penumbra={0.95}
+            distance={90}
+            decay={.15}
+            color="#FCDC95"
+          />
 
           <Tokyo 
             position={islandPosition}
