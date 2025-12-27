@@ -6,6 +6,10 @@ html {
   scroll-behavior: smooth;
 }
 
+main > section {
+  padding-block: 6rem; /* space above + below each section */
+}
+
 /* Simple safe globals for Tailwind v4 projects */
 :root{
   --blue-rgb: 237 245 255;
@@ -18,12 +22,6 @@ body{
   font-family: "Work Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
-}
-
-/* Light-mode tweak */
-@media (prefers-color-scheme: dark){
-  :root{ color:#ffffff; }
-  body{ background-color:#ffffff; }
 }
 
 /* small, straightforward helper classes (avoid @apply to prevent v4 issues) */
