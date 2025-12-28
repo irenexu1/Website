@@ -6,14 +6,11 @@ import Tokyo from '../models/tokyo'
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 
-
 const Home = () => {
   return (
     <section className="w-full h-screen relative">
       <header className="absolute top-10 left-0 right-0 z-10 font-rosarivo">
-        {/* Center this whole block */}
         <div className="mx-auto w-fit flex flex-col items-center">
-          {/* Small line stays aligned relative to the name */}
           <p className="w-fit self-start text-lg tracking-[0.25em] mb-2 -translate-x-15 text-indigo-200">
             Hi, I'm
           </p>
@@ -21,12 +18,12 @@ const Home = () => {
             IRENE XU
           </h1>
             <p className="w-fit self-center text-lg tracking-[0.25em] mb-2 text-indigo-200">
-            a software engineer from UW
-          </p>
+                a software engineer from UW
+            </p>
         </div>
       </header>
     </section>
   );
-};
+}
 
 export default Home;

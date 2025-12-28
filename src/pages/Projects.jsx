@@ -1,5 +1,3 @@
-import React from 'react'
-
 const Projects = () => {
   return (
     <section id="projects" className="min-h-screen px-6 py-16">
