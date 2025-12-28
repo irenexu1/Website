@@ -21,9 +21,16 @@ main > section {
 
 @layer base {
   h1 {
+    @apply text-white;
+  }
+}
+
+@layer base {
+  h2 {
     @apply text-indigo-400;
   }
 }
+
 
 
 
