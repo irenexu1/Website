@@ -1,6 +1,8 @@
-
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Rosarivo:ital@0;1&display=swap");
+
 @import "tailwindcss";
+
 
 html {
   scroll-behavior: smooth;
@@ -10,11 +12,20 @@ main > section {
   padding-block: 6rem; /* space above + below each section */
 }
 
-/* Simple safe globals for Tailwind v4 projects */
 :root{
+  color: #ffffff;
+
   --blue-rgb: 237 245 255;
   --green-rgb: 125 161 35;
 }
+
+@layer base {
+  h1 {
+    @apply text-indigo-400;
+  }
+}
+
+
 
 html,body{height:100%;}
 body{
@@ -23,6 +34,13 @@ body{
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
 }
+
+
+
+.font-rosarivo {
+  font-family: "Rosarivo", serif;
+}
+
 
 /* small, straightforward helper classes (avoid @apply to prevent v4 issues) */
 .max-container{

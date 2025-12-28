@@ -1,9 +1,14 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite"; // or whatever plugin you actually use
 
-// https://vite.dev/config/
+
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  assetsInclude: ['**/*.glb']
-})
+  assetsInclude: ["**/*.glb"],
+  server: {
+    watch: {
+      ignored: ["**/src/pages/Home1.jsx"],
+    },
+  },
+});

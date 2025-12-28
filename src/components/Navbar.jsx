@@ -5,9 +5,9 @@ const Navbar = () => {
     <header className="header">
       <a
         href="#home"
-        className="w-10 h-10 rounded-lg bg-white items-center justify-center flex font-bold shadow-md"
+        className="w-20 h-10 rounded-lg bg-slate-950 items-center justify-center flex font-bold shadow-md"
       >
-        <p className="blue-gradient_text">IX</p>
+        <p className="text-white">Irene Xu</p>
       </a>
 
       <nav className="flex text-lg gap-7 font-medium">

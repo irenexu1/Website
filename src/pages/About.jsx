@@ -1,6 +1,7 @@
 import React from 'react'
 import profile from '../assets/images/website.png';
 
+
 const About = () => {
   return (
     <section
@@ -18,8 +19,8 @@ const About = () => {
 
       {/* Right half */}
       <div className="w-full md:w-1/2 flex flex-col justify-center">
-        <h2 className="text-3xl font-bold">About me</h2>
-        <p className="mt-4">Your text goes here...</p>
+        <h1 className="text-3xl font-bold">About me</h1>
+        <p className="mt-4">Hi! I'm Irene. </p>
       </div>
     </section>
   );
