@@ -1,12 +1,12 @@
 import React from 'react'
 import{ BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Home, About, Projects, Contact } from './pages';
+import { Home, About, Skills, Projects, Contact } from './pages';
 import Navbar from './components/Navbar';
 
 
 const App = () => {
   return (
-    <main className="bg-slate-950/100">
+    <main className="bg-slate-950">
       <Navbar />
           <section id ="home" >
             <Home />
@@ -14,6 +14,10 @@ const App = () => {
 
           <section id ="about" >
             <About />
+          </section>
+
+          <section id ="skills" >
+            <Skills />
           </section>
 
           <section id ="projects" >
