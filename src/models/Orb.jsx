@@ -7,7 +7,7 @@ Title: Cyber Orb
 */
 
 import { useMemo, useRef, useState } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
 import { useGLTF, useAnimations, Decal } from '@react-three/drei'
 import * as THREE from "three";
 
@@ -20,7 +20,7 @@ function makeTextTexture(text) {
   const ctx = c.getContext("2d");
 
   ctx.clearRect(0, 0, size, size); // transparent background
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "#ff1a8c"; // Change to any color: "#ffaa00", "#00ff00", etc.
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.font = "bold 72px Arial";
@@ -33,8 +33,20 @@ function makeTextTexture(text) {
 }
 
 
-export default function Orb({ id = 0, label = "", position = [0, 0, 0], onSelect, ...props}) {
+export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1.5, position = [0, 0, 0], onSelect, ...props}) {
    const ref = useRef();
+
+   const spinRef = useRef();
+
+   const dragging = useRef(false);
+   const last = useRef({x:0, y:0});
+   const velocity = useRef({ x: 0, y: 0 })
+   const damping = 0.92 // closer to 1 = longer glide
+   const sensitiviy = 0.01
+
+   // Load image texture if provided
+   const imageTexture = imagePath ? useLoader(THREE.TextureLoader, imagePath) : null;
+
    const { nodes, materials } = useGLTF('/cyber_orb.glb');
    
    const mats = useMemo(() => {
@@ -45,7 +57,7 @@ export default function Orb({ id = 0, label = "", position = [0, 0, 0], onSelect
     shell.emissive.set('#adbfff');
     shell.emissiveIntensity = 0.5;
     
-    const core = materials.material.clone();;
+    const core = materials.material.clone();
     
     const frame = materials.frame.clone();
     frame.color.set('#e3f2ff'); 
@@ -53,27 +65,76 @@ export default function Orb({ id = 0, label = "", position = [0, 0, 0], onSelect
     frame.emissiveIntensity = 4;
     frame.toneMapped = true;
     
-    return {
-      shell,
-      core,
-      frame,
-    };
+    return {shell, core, frame,};
    }, [materials]);
    
    const labelTex = useMemo(() => makeTextTexture(label), [label]);
 
-   useFrame(({clock}) => {
-    const t = clock.getElapsedTime() + id * 0.6;
+   const onPointerDown = (e) => {
+    e.stopPropagation();
+    dragging.current = true;
+    last.current.x = e.clientX;
+    last.current.y = e.clientY;
+    e.target.setPointerCapture?.(e.pointerId)
+   }
+
+   const onPointerUp = (e) => {
+    dragging.current = false;
+    e.target.releasePointerCapture?.(e.pointerId)
+   } 
+
+   const onPointerMove = (e) => {
+    if (!dragging.current || !spinRef.current) return;
+    e.stopPropagation();
+
+    const dx = e.clientX - last.current.x
+    const dy = e.clientY - last.current.y
+    last.current.x = e.clientX
+    last.current.y = e.clientY
+    
+    const vy = dx * sensitiviy
+    const vx = dy * sensitiviy
+
+    // tweak sensitivity to taste
+    spinRef.current.rotation.y += vy
+    spinRef.current.rotation.x += vx
+
+    // store velocity for momentum (simple smoothing)
+    velocity.current.y = vy
+    velocity.current.x = vx
+   }
+
+
+   useFrame(({clock}, delta) => {
     if (!ref.current) return;
+    const t = clock.getElapsedTime() + id * 0.6;
     ref.current.position.y = position[1] + Math.sin(t) * 0.12;
+
+    // 2) momentum rotation (inner group)
+    if (!spinRef.current) return
+
+    if (!dragging.current) {
+        spinRef.current.rotation.y += velocity.current.y
+        spinRef.current.rotation.x += velocity.current.x
+
+        const d = Math.pow(damping, delta * 60)
+        velocity.current.y *= d
+        velocity.current.x *= d
+
+    if (Math.abs(velocity.current.y) < 0.00001) velocity.current.y = 0
+    if (Math.abs(velocity.current.x) < 0.00001) velocity.current.x = 0
+    }
    });
 
 
   return (
-    <group ref={ref} position={position} onClick={(e) => {
-        e.stopPropagation();
-        onSelect?.(id);
-    }}{...props} dispose={null}>
+  <group ref={ref} position={position} 
+    onPointerDown={onPointerDown}
+    onPointerUp={onPointerUp}
+    onPointerLeave={onPointerUp}
+    onPointerMove={onPointerMove}
+    {...props} dispose={null}>
+    <group ref={spinRef}>
       <group name="Sketchfab_Scene">
         <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, 0]}>
           <group name="root">
@@ -85,7 +146,19 @@ export default function Orb({ id = 0, label = "", position = [0, 0, 0], onSelect
                   receiveShadow
                   geometry={nodes.Object_4.geometry}
                   material={mats.shell}
-                />
+                >
+                  {imageTexture && (
+                    <Decal
+                      position={[0, 0, 1]}
+                      rotation={[0, 0, 0]}
+                      scale={imageScale}
+                      map={imageTexture}
+                      transparent
+                      polygonOffset
+                      polygonOffsetFactor={-1}
+                    />
+                  )}
+                </mesh>
               </group>
               <group name="Sphere002_1" scale={0.72}>
                 <mesh
@@ -111,6 +184,7 @@ export default function Orb({ id = 0, label = "", position = [0, 0, 0], onSelect
         </group>
       </group>
     </group>
+  </group>
   )
 }
 

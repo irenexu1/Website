@@ -18,7 +18,7 @@ export default function Skills() {
           <ambientLight intensity={0.35} />
           <directionalLight position={[4, 4, 3]} intensity={1.5} />
 
-          <Orb scale={1} position={[0, 0, 0]} />
+          <Orb scale={1} position={[0, 0, 0]} imagePath="/c++.png" />
 
         </Canvas>
       </div>
