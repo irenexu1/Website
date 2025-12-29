@@ -55,7 +55,7 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
     shell.opacity = 0.8;
     shell.color.set('#968cff'); 
     shell.emissive.set('#adbfff');
-    shell.emissiveIntensity = 0.5;
+    shell.emissiveIntensity = 0.7;
     
     const core = materials.material.clone();
     
