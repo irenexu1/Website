@@ -1,4 +1,6 @@
-import profile from '../assets/images/website.png';
+import profile from '../assets/website.png';
+import {motion} from 'framer-motion';
+import { fadeIn, textVariant } from '../motion';
 
 
 const About = () => {
