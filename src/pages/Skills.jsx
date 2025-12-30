@@ -1,12 +1,13 @@
 import Orb from "../models/Orb.jsx";
 import { Canvas } from "@react-three/fiber";
+import SectionWrapper from "../components/SectionWrapper";
 
 
 
-export default function Skills() {
+const Skills = () => {
 
   return (
-    <section id="skills" className="min-h-screen w-full px-6 py-16 mt-10">
+    <section id="skills" className="w-full px-6 py-16 mt-10">
       <p className="p-lead flex justify-center">
         Introduction
       </p>
@@ -35,3 +36,5 @@ export default function Skills() {
     </section>
   );
 }
+
+export default SectionWrapper(Skills, "skills")
