@@ -21,7 +21,7 @@ export default function Skills() {
 
           <Orb scale={0.7} position={[-6, 0, 0]} imagePath="javascript.png" />
           <Orb scale={0.7} position={[-4, 0, 0]} imagePath="tailwind10.png" imageScale={1.5}/>
-          <Orb scale={0.7} position={[-2, 0, 0]} imagePath="node.png" />
+          <Orb scale={0.7} position={[-2, 0, 0]} imagePath="node.png" imageScale={1.7}/>
           <Orb scale={0.7} position={[0, 0, 0]} imagePath="/c++.png" imageScale={1.7}/>
           <Orb scale={0.7} position={[2, 0, 0]} imagePath="/c.png" />
           <Orb scale={0.7} position={[4, 0, 0]} imagePath="docker.png" />
