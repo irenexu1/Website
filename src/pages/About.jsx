@@ -17,9 +17,12 @@ const About = () => {
         />
       </div>
 
-      <div className="w-full md:w-1/2 flex flex-col justify-center">
-        <motion.div variants={textVariant()} className="-mt-20"> 
-          <h2 className="-mt-15">
+      <div className="w-full md:w-1/2 flex flex-col justify-center -mt-30">
+        <motion.div variants={textVariant()}> 
+          <p className="p-lead">
+            Introduction
+          </p>
+          <h2>
             About me 
           </h2>
         </motion.div>

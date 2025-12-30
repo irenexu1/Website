@@ -36,6 +36,17 @@ body {
   p {
     @apply text-lg;
   }
+  
+}
+
+@layer components {
+  .p-lead { 
+    @apply text-[1.4rem] text-indigo-200/70 uppercase ; 
+    font-family: "Balthazar", serif;
+  }
+  .p-muted { 
+    @apply text-sm leading-6 text-white; 
+  }
 }
 
 

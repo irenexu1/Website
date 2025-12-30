@@ -6,12 +6,15 @@ import { Canvas } from "@react-three/fiber";
 export default function Skills() {
 
   return (
-    <section id="skills" className="min-h-screen w-full px-6 py-16">
+    <section id="skills" className="min-h-screen w-full px-6 py-16 mt-10">
+      <p className="p-lead flex justify-center">
+        Introduction
+      </p>
       <h2 className="flex justify-center">
         Skills
       </h2>
   
-      {/* Canvas container height controls how tall the 3D area is */}
+      {/* i want to add the tech name under the orb and mayeb a click that resets the orb orientation */} 
       <div className="w-full h-[650px] rounded-2xl overflow-hidden -mt-50">
         <Canvas camera={{ position: [0, 0, 10], fov: 45 }}>
 
