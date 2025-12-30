@@ -1,4 +1,4 @@
-import { Home, About, Skills, Projects, Contact } from './pages';
+import { Home, About, Experiences, Skills, Projects, Contact } from './pages';
 import Navbar from './components/Navbar';
 
 
@@ -16,6 +16,10 @@ const App = () => {
 
           <section id ="skills">
             <Skills />
+          </section>
+
+          <section id ="experiences">
+            <Experiences/>
           </section>
 
           <section id ="projects">
