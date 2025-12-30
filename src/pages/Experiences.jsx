@@ -7,23 +7,36 @@ import SectionWrapper from "../components/SectionWrapper";
 import { experiences } from "../Info";
 
 
-const ExperienceCard = ({ experience}) => {
+const ExperienceCard = ({ experience}) => (
   <VerticalTimelineElement 
-    contentStyle={{background:'#ffffff', color:'#ffffff'}}
+    contentStyle={{background:'#2c2c59', color:'#ffffff'}}
     contentArrowStyle={{ borderRight: '7px solid #232631'}}
     date={experience.date}
   >
-    <h3 className="font-semibold">{experience.title}</h3>
-    <p className="opacity-70">{experience.company_name}</p>
+    <div>
+      <h3 className="font-semibold">{experience.title}</h3>
+      <p className="opacity-70">{experience.company_name}</p>
+    </div>
+
+    <ul className='mt list-disc ml-5 space-y-2'>
+      {experience.points.map((point, index) => (
+        <li
+          key={`experience-point-${index}`}
+          className='text-white-100 text-[14px] pl-1 tracking-wider'>
+            {point}
+        </li>
+      ))}
+    </ul>
+
   </VerticalTimelineElement>
-}
+)
 
 
 const Experiences = () => {
   return (
     <section id="experiences" className="min-h-screen px-6 py-16">
       <motion.div variants={textVariant()}>
-        <p className="p-lead">
+        <p className="p-lead flex justify-center">
           Introduction
         </p>
 
