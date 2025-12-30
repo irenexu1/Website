@@ -33,6 +33,9 @@ body {
     @apply text-indigo-400 text-6xl font-bold;
     font-family: "Balthazar", serif;
   }
+  p {
+    @apply text-lg;
+  }
 }
 
 
@@ -65,8 +68,4 @@ body {
 .font-balthazar {
   font-family: "Balthazar", serif;
 
-}
-
-main > section {
-  padding-block: 4rem; 
 }

@@ -2,14 +2,13 @@ import React from 'react'
 import { useState, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import Loader from '../components/Loader'
-import Tokyo from '../models/tokyo'
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 
 const Home = () => {
   return (
     <section className="w-full h-screen relative">
-      <header className="absolute top-[20vh] md:top-45 left-0 right-0 z-10 font-rosarivo">
+      <header className="absolute top-[20vh] md:top-55 left-0 right-0 z-10 font-rosarivo">
         <div className="mx-auto w-fit flex flex-col items-center">
           <p className="w-fit self-start text-lg tracking-[0.25em] mb-2 -translate-x-15 text-indigo-200">
             Hi, I'm
