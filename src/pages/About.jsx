@@ -12,7 +12,7 @@ const About = () => {
 
       {/* Right half */}
       <div className="w-full md:w-1/2 flex flex-col justify-center">
-        <h2 className="text-3xl font-bold">
+        <h2 className="-mt-15">
            About me 
         </h2>
         <p className="mt-4">

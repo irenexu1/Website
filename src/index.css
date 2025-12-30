@@ -1,5 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Rosarivo:ital@0;1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Almendra+SC&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Balthazar&display=swap");
 @import "tailwindcss";
 @source "../index.html";
 @source "./**/*.{js,jsx,ts,tsx}";
@@ -28,14 +30,17 @@ body {
     @apply text-white;
   }
   h2 {
-    @apply text-indigo-400;
+    @apply text-indigo-400 text-6xl font-bold;
+    font-family: "Balthazar", serif;
   }
 }
 
 
 .header{
-  position:sticky;
+  position:fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index:10;
 
   display:flex;
@@ -52,6 +57,16 @@ body {
   font-family: "Rosarivo", serif;
 }
 
+.font-almendra {
+  font-family: "Almendra SC", serif;
+  letter-spacing: 0.08em;
+}
+
+.font-balthazar {
+  font-family: "Balthazar", serif;
+
+}
+
 main > section {
-  padding-block: 6rem; 
+  padding-block: 4rem; 
 }

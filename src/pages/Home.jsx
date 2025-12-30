@@ -9,7 +9,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 const Home = () => {
   return (
     <section className="w-full h-screen relative">
-      <header className="absolute top-10 left-0 right-0 z-10 font-rosarivo">
+      <header className="absolute top-[20vh] md:top-45 left-0 right-0 z-10 font-rosarivo">
         <div className="mx-auto w-fit flex flex-col items-center">
           <p className="w-fit self-start text-lg tracking-[0.25em] mb-2 -translate-x-15 text-indigo-200">
             Hi, I'm
