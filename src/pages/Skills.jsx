@@ -2,7 +2,15 @@ import Orb from "../models/Orb.jsx";
 import { Canvas } from "@react-three/fiber";
 import SectionWrapper from "../components/SectionWrapper";
 
+const pngs = import.meta.glob("../assets/tech/*.png", { eager: true });
 
+export const images = Object.fromEntries(
+  Object.entries(pngs).map(([path, mod]) => {
+    const file = path.split("/").pop();
+    const name = file.replace(".png", "");
+    return [name, mod.default];
+  })
+);
 
 const Skills = () => {
 
@@ -23,13 +31,13 @@ const Skills = () => {
           <directionalLight position={[4, 4, 3]} intensity={1.5} />
 
 
-          <Orb scale={0.7} position={[-6, 0, 0]} imagePath="javascript.png" />
-          <Orb scale={0.7} position={[-4, 0, 0]} imagePath="tailwind10.png" imageScale={1.5}/>
-          <Orb scale={0.7} position={[-2, 0, 0]} imagePath="node.png" imageScale={1.7}/>
-          <Orb scale={0.7} position={[0, 0, 0]} imagePath="/c++.png" imageScale={1.7}/>
-          <Orb scale={0.7} position={[2, 0, 0]} imagePath="/c.png" />
-          <Orb scale={0.7} position={[4, 0, 0]} imagePath="docker.png" />
-          <Orb scale={0.7} position={[6, 0, 0]} imagePath="python.png" imageScale={1.5}/>
+          <Orb scale={0.7} position={[-6, 0, 0]} imagePath={images.js} />
+          <Orb scale={0.7} position={[-4, 0, 0]} imagePath={images.tailwindd} imageScale={1.5}/>
+          <Orb scale={0.7} position={[-2, 0, 0]} imagePath={images.nodejs} imageScale={1.5}/>
+          <Orb scale={0.7} position={[0, 0, 0]} imagePath={images.cpp} imageScale={1.7}/>
+          <Orb scale={0.7} position={[2, 0, 0]} imagePath={images.c} />
+          <Orb scale={0.7} position={[4, 0, 0]} imagePath={images.docker} />
+          <Orb scale={0.7} position={[6, 0, 0]} imagePath={images.pythonn} imageScale={1.5}/>
 
         </Canvas>
       </div>

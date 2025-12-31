@@ -17,7 +17,7 @@ const Home = () => {
             IRENE XU
           </h1>
             <p className="w-fit self-center text-lg tracking-[0.25em] mb-2 text-indigo-200">
-                a software engineer from UW
+                an aspiring software engineer from UW
             </p>
         </div>
       </header>
