@@ -10,8 +10,23 @@ const ExperienceCard = ({ experience }) => (
   <VerticalTimelineElement
     contentStyle={{ background: "#1F2542", color: "#ffffff", boxShadow: "0 2px #ECCFFF" }}
     contentArrowStyle={{ borderRight: "7px solid #232631" }}
-    iconStyle={{ background: "#2c2c59", boxShadow: "0 0 0 2px #ffffff",}}
+    iconStyle={{
+  width: "20px",
+  height: "20px",
+  borderRadius: "999px",
+  background: "#2c2c59",
+
+  // 2 rings:
+  // - first (white/gray) ring closer in
+  // - second (black) ring outside it
+  boxShadow: "0 0 0 1px rgba(255,255,255,0.7), 0 0 0 10px #000",
+
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}}
     date={experience.date}
+    
   >
     <div>
       <h3 className="font-semibold">{experience.title}</h3>
@@ -48,7 +63,7 @@ const Experiences = () => {
     "left-[18px] min-[1170px]:left-1/2 min-[1170px]:-translate-x-1/2";
 
   return (
-    <section id="experiences" className="min-h-screen px-6 py-16">
+    <section id="experiences" className="w-full px-6 py-16 bg-black">
       <motion.div variants={textVariant()}>
         <p className="p-lead flex justify-center">What I have worked on</p>
         <h2 className="flex justify-center">Experiences</h2>
@@ -62,20 +77,20 @@ const Experiences = () => {
         <div ref={timelineRef} className="relative mt-20">
           {/* dim track */}
           <div
-            className={`pointer-events-none absolute top-0 bottom-0 ${linePos} w-[2px] bg-white/10 z-10`}
+            className={`pointer-events-none absolute top-0 bottom-0 ${linePos} w-[2px] bg-white/10 z-0`}
           />
 
           {/* progress fill (sharp) */}
           <motion.div
             style={{ height: fillHeight }}
-            className={`pointer-events-none absolute top-0 ${linePos} w-[2px] origin-top z-20
+            className={`pointer-events-none absolute top-0 ${linePos} w-[2px] origin-top z-0
               bg-gradient-to-b from-blue-800 via-indigo-500 to-indigo-300`}
           />
 
           {/* progress glow (blur aura) */}
           <motion.div
             style={{ height: fillHeight }}
-            className={`pointer-events-none absolute top-0 ${linePos} w-[10px] origin-top z-20
+            className={`pointer-events-none absolute top-0 ${linePos} w-[10px] origin-top z-0
               blur-md opacity-35 bg-gradient-to-b from-blue-800 via-blue-500 to-indigo-400`}
           />
 

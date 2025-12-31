@@ -18,7 +18,7 @@ const App = () => {
             <Skills />
           </section>
 
-          <section id ="experiences">
+          <section id ="experiences" className="bg-black">
             <Experiences/>
           </section>
 

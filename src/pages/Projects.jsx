@@ -84,7 +84,7 @@ const ProjectCard = ({ index, name, description, tags, image, source_code_link})
 
 const Projects = () => {
   return (
-    <section id="projects" className="px-6 py-16">
+    <section id="projects" className="px-6 py-16 ml-20">
       <motion.div variants={textVariant()}> 
         <p className="p-lead flex leading-[30px]">
           Featured work

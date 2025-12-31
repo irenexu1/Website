@@ -31,13 +31,13 @@ const Skills = () => {
           <directionalLight position={[4, 4, 3]} intensity={1.5} />
 
 
-          <Orb scale={0.7} position={[-6, 0, 0]} imagePath={images.js} />
-          <Orb scale={0.7} position={[-4, 0, 0]} imagePath={images.tailwindd} imageScale={1.5}/>
-          <Orb scale={0.7} position={[-2, 0, 0]} imagePath={images.nodejs} imageScale={1.5}/>
-          <Orb scale={0.7} position={[0, 0, 0]} imagePath={images.cpp} imageScale={1.7}/>
-          <Orb scale={0.7} position={[2, 0, 0]} imagePath={images.c} />
-          <Orb scale={0.7} position={[4, 0, 0]} imagePath={images.docker} />
-          <Orb scale={0.7} position={[6, 0, 0]} imagePath={images.pythonn} imageScale={1.5}/>
+          <Orb scale={0.7} position={[-6, 0, 0]} imagePath={images.js} label="JavaScript" />
+          <Orb scale={0.7} position={[-4, 0, 0]} imagePath={images.tailwindd} imageScale={1.5} label="Tailwind"/>
+          <Orb scale={0.7} position={[-2, 0, 0]} imagePath={images.nodejs} imageScale={1.5} label="Node.js"/>
+          <Orb scale={0.7} position={[0, 0, 0]} imagePath={images.cpp} imageScale={1.7} label="C++"/>
+          <Orb scale={0.7} position={[2, 0, 0]} imagePath={images.c} label="C" />
+          <Orb scale={0.7} position={[4, 0, 0]} imagePath={images.docker} label="Docker" />
+          <Orb scale={0.7} position={[6, 0, 0]} imagePath={images.pythonn} imageScale={1.5} label="Python"/>
 
         </Canvas>
       </div>

@@ -100,14 +100,16 @@ body {
 .vertical-timeline::before { background: transparent !important; }
 
 .vertical-timeline-element-icon{
+  position: relative;
   top: 22px !important;
-  width: 24px !important;
-  height: 24px !important;
-  margin-left: -12px !important; 
+  margin-left: -12px !important; /* change if you change size */
 }
 
 .vertical-timeline-element-icon svg{
   width: 12px !important;
   height: 12px !important;
 }
+
+
+
 

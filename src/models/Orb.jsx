@@ -8,7 +8,7 @@ Title: Cyber Orb
 
 import { useMemo, useRef, useState } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
-import { useGLTF, useAnimations, Decal } from '@react-three/drei'
+import { useGLTF, useAnimations, Decal, Html } from '@react-three/drei'
 import * as THREE from "three";
 
 
@@ -43,6 +43,18 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
    const velocity = useRef({ x: 0, y: 0 })
    const damping = 0.92 // closer to 1 = longer glide
    const sensitiviy = 0.01
+   const wobbleRef = useRef({ phase: 0, decaying: false, strength: 0 })
+   const [hovered, setHovered] = useState(false);
+   
+   // Randomized animation parameters per orb
+   const animParams = useMemo(() => ({
+     speedY: 0.8 + Math.random() * 0.6,        // 0.8 to 1.4
+     speedX: 0.5 + Math.random() * 0.4,        // 0.5 to 0.9
+     amplitudeY: 0.03 + Math.random() * 0.03,  // 0.03 to 0.06 (reduced)
+     amplitudeX: 0.03 + Math.random() * 0.04,  // 0.03 to 0.07
+     phaseY: Math.random() * Math.PI * 2,      // random start phase
+     phaseX: Math.random() * Math.PI * 2,
+   }), [id])
 
    // Load image texture if provided
    const imageTexture = imagePath ? useLoader(THREE.TextureLoader, imagePath) : null;
@@ -80,6 +92,11 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
 
    const onPointerUp = (e) => {
     dragging.current = false;
+    // Trigger wobble when drag stops
+    const totalVel = Math.abs(velocity.current.x) + Math.abs(velocity.current.y);
+    wobbleRef.current.strength = Math.min(totalVel * 2, 0.015);
+    wobbleRef.current.decaying = true;
+    wobbleRef.current.phase = 0;
     e.target.releasePointerCapture?.(e.pointerId)
    } 
 
@@ -107,10 +124,16 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
 
    useFrame(({clock}, delta) => {
     if (!ref.current) return;
-    const t = clock.getElapsedTime() + id * 0.6;
-    ref.current.position.y = position[1] + Math.sin(t) * 0.12;
+    
+    // Move upward when hovered
+    const targetY = hovered ? position[1] + 0.3 : position[1];
+    const targetX = position[0];
+    
+    // Smoothly interpolate to target position
+    ref.current.position.y += (targetY - ref.current.position.y) * 0.1;
+    ref.current.position.x += (targetX - ref.current.position.x) * 0.1;
 
-    // 2) momentum rotation (inner group)
+    // momentum rotation from user dragging only (no auto-rotation)
     if (!spinRef.current) return
 
     if (!dragging.current) {
@@ -121,17 +144,35 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
         velocity.current.y *= d
         velocity.current.x *= d
 
-    if (Math.abs(velocity.current.y) < 0.00001) velocity.current.y = 0
-    if (Math.abs(velocity.current.x) < 0.00001) velocity.current.x = 0
+        if (Math.abs(velocity.current.y) < 0.00001) velocity.current.y = 0
+        if (Math.abs(velocity.current.x) < 0.00001) velocity.current.x = 0
+        
+        // Spring wobble effect after drag
+        if (wobbleRef.current.decaying && wobbleRef.current.strength > 0.0001) {
+          wobbleRef.current.phase += delta * 18; // wobble speed
+          const wobbleAmount = Math.sin(wobbleRef.current.phase) * wobbleRef.current.strength;
+          spinRef.current.rotation.z = wobbleAmount;
+          spinRef.current.rotation.y += wobbleAmount * 0.3;
+          
+          // Decay the wobble
+          wobbleRef.current.strength *= Math.pow(0.92, delta * 60);
+          
+          if (wobbleRef.current.strength < 0.0001) {
+            wobbleRef.current.decaying = false;
+            spinRef.current.rotation.z = 0;
+          }
+        }
     }
    });
 
 
   return (
+  <>
   <group ref={ref} position={position} 
     onPointerDown={onPointerDown}
     onPointerUp={onPointerUp}
-    onPointerLeave={onPointerUp}
+    onPointerLeave={(e) => { onPointerUp(e); setHovered(false); }}
+    onPointerEnter={() => setHovered(true)}
     onPointerMove={onPointerMove}
     {...props} dispose={null}>
     <group ref={spinRef}>
@@ -185,6 +226,22 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
       </group>
     </group>
   </group>
+  {label && (
+    <Html position={[position[0], position[1] - 1.5, position[2]]} center distanceFactor={10}>
+      <div style={{ 
+        color: 'white', 
+        fontSize: '14px',
+        fontWeight: '500',
+        whiteSpace: 'nowrap',
+        pointerEvents: 'none',
+        userSelect: 'none',
+        textAlign: 'center'
+      }}>
+        {label}
+      </div>
+    </Html>
+  )}
+  </>
   )
 }
 
