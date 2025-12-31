@@ -4,36 +4,58 @@ import { projects } from "../Info";
 import { fadeIn, textVariant } from '../motion';
 
 
-const ProjectCard = ({ index, name, description, tags, source_code_link}) => {
+const ProjectCard = ({ index, name, description, tags, image, source_code_link}) => {
   return (
     <motion.div 
       variants={fadeIn("up", "spring", index * 0.5, 0.75)}
       className=" sm:w-[360px] w-full"
     >
-      <div className="relative w-full overflow-hidden rounded-2xl p-[1px]">
-        {/* the soft glow  rgba(200,120,255,0.90) 88%,  transparent 94.3% 100%*/}
+      <div className="group relative w-full overflow-hidden rounded-2xl p-[1px]">
+        <span className="pointer-events-none absolute inset-0 rounded-2xl bg-slate-700" />
+
+          {/* hover: full strong rim glow (entire border) */}
+        <span
+          className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 blur-lg transition-opacity duration-300 group-hover:opacity-100 "
+          style={{
+          background:
+            "conic-gradient(from 0deg, rgba(255,204,250,1), rgba(255,204,250,1))"
+          }}
+        />
+        <span
+          className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 "
+          style={{
+          background:
+            "conic-gradient(from 0deg, rgba(255,204,250,1), rgba(255,204,250,1))"
+          }}
+        />
+        
+
+
+        {/* the soft glow */}
         <span
           className="pointer-events-none absolute inset-[-200%] animate-[spin_5s_linear_infinite] blur-xl opacity-70"
           style={{
             background:
-              "conic-gradient(from 0deg, transparent 0% 65%, rgba(77, 119, 214, 0) 55%, rgba(77, 119, 214,0.08) 60%, rgba(77, 119, 214,0.18) 68%, rgba(77, 119, 214, 0.38) 76%, rgba(141, 144, 240, 0.55) 84%, rgba(174, 141, 240, 0.78) 90%, rgba(255,186,252,0.90) 96%, rgba(255,186,252,1.00) 100%)"
-
-      
+              "conic-gradient(from 0deg, transparent 0% 65%, rgba(77, 119, 214, 0) 55%, rgba(77, 119, 214,0.08) 60%, rgba(77, 119, 214,0.18) 68%, rgba(77, 119, 214, 0.38) 76%, rgba(141, 144, 240, 0.55) 84%, rgba(174, 141, 240, 0.78) 90%, rgba(255,186,252,0.90) 96%, rgba(255,186,252,1.00) 100%)"  
           }}
         />
-        {/* the sharp glow rgba(120,200,255,0.35) 78%, rgba(200,120,255,0.85) 90%, rgba(200,120,255,1.00) 94%, transparent 94.3% 100%)*/}
+        {/* the sharp glow */}
         <span
           className="pointer-events-none absolute inset-[-200%] animate-[spin_5s_linear_infinite] opacity-90"
           style={{
             background:
               "conic-gradient(from 0deg, transparent 0% 60%, rgba(77, 119, 214,0.00) 50%, rgba(77, 119, 214, 0.10) 66%, rgba(141, 144, 240, 0.28) 80%, rgba(174, 141, 240, 0.60) 88%, rgba(255,186,252, 0.91) 97%, rgba(255,186,252,1.00) 100%)"
-
-
           }}
         />
 
         <div className="relative w-full rounded-2xl bg-gray-950 p-5">
           <div className="relative w-full h-[230px]">
+            <img
+            src={image}
+            alt='project_image'
+            className='w-full h-full object-cover rounded-2xl'
+            />
+
             <div className="absolute inset-0 flex justify-end m-3 card-img_hover">
               <div
                 onClick={() => window.open(source_code_link, "_blank")}
@@ -43,8 +65,8 @@ const ProjectCard = ({ index, name, description, tags, source_code_link}) => {
           </div>
 
           <div className="mt-5">
-            <h3 className="text-white font-bold text-[24px]">{name}</h3>
-            <p className="mt-2 text-secondary text-[14px]">{description}</p>
+            <h3 className= "text-[22px]">{name}</h3>
+            <p className="mt-2 text-white text-[15px]">{description}</p>
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
@@ -59,11 +81,6 @@ const ProjectCard = ({ index, name, description, tags, source_code_link}) => {
     </motion.div>
   );
 };
-
-
-
-
-
 
 const Projects = () => {
   return (

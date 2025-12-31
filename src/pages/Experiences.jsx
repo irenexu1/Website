@@ -1,16 +1,16 @@
-import React from 'react'
-import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
-import 'react-vertical-timeline-component/style.min.css';
-import { motion } from 'framer-motion';
-import { textVariant } from '../motion';
+import React, { useRef } from "react";
+import { VerticalTimeline, VerticalTimelineElement } from "react-vertical-timeline-component";
+import "react-vertical-timeline-component/style.min.css";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { fadeIn, textVariant } from "../motion";
 import SectionWrapper from "../components/SectionWrapper";
 import { experiences } from "../Info";
 
-
-const ExperienceCard = ({ experience}) => (
-  <VerticalTimelineElement 
-    contentStyle={{background:'#2c2c59', color:'#ffffff'}}
-    contentArrowStyle={{ borderRight: '7px solid #232631'}}
+const ExperienceCard = ({ experience }) => (
+  <VerticalTimelineElement
+    contentStyle={{ background: "#1F2542", color: "#ffffff", boxShadow: "0 2px #ECCFFF" }}
+    contentArrowStyle={{ borderRight: "7px solid #232631" }}
+    iconStyle={{ background: "#2c2c59", boxShadow: "0 0 0 2px #ffffff",}}
     date={experience.date}
   >
     <div>
@@ -18,44 +18,76 @@ const ExperienceCard = ({ experience}) => (
       <p className="opacity-70">{experience.company_name}</p>
     </div>
 
-    <ul className='mt list-disc ml-5 space-y-2'>
+    <ul className="mt-4 list-disc ml-5 space-y-2">
       {experience.points.map((point, index) => (
         <li
           key={`experience-point-${index}`}
-          className='text-white-100 text-[14px] pl-1 tracking-wider'>
-            {point}
+          className="text-white-100 text-[14px] pl-1 tracking-wider"
+        >
+          {point}
         </li>
       ))}
     </ul>
-
   </VerticalTimelineElement>
-)
-
+);
 
 const Experiences = () => {
+  const timelineRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: timelineRef,
+    offset: ["start 0.85", "end 0.2"],
+  });
+
+  const fillHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  // This matches the library’s line position:
+  // - left on small screens
+  // - centered only when >= 1170px
+  const linePos =
+    "left-[18px] min-[1170px]:left-1/2 min-[1170px]:-translate-x-1/2";
+
   return (
     <section id="experiences" className="min-h-screen px-6 py-16">
       <motion.div variants={textVariant()}>
-        <p className="p-lead flex justify-center">
-          Introduction
-        </p>
+        <p className="p-lead flex justify-center">What I have worked on</p>
+        <h2 className="flex justify-center">Experiences</h2>
 
-        <h2 className="flex justify-center">
-          Experiences
-        </h2>
+            <motion.p variants={fadeIn("", "", 0.1, 1)} className="mt-3 text-white text-[17px] max-w-3xl leading-[30px] mx-auto">
+              With hands-on experience in full-stack development , I have contributed to a variety of high-impact projects across 
+              multiple industries. I’m passionate about creating beautiful, user-friendly frontends paired with solid, scalable 
+              backends. I am always eager to learn and try out new experiences! -- placeholder
+            </motion.p>
 
-        <div className='mt-20 flex flex-col'>
+        <div ref={timelineRef} className="relative mt-20">
+          {/* dim track */}
+          <div
+            className={`pointer-events-none absolute top-0 bottom-0 ${linePos} w-[2px] bg-white/10 z-10`}
+          />
+
+          {/* progress fill (sharp) */}
+          <motion.div
+            style={{ height: fillHeight }}
+            className={`pointer-events-none absolute top-0 ${linePos} w-[2px] origin-top z-20
+              bg-gradient-to-b from-blue-800 via-indigo-500 to-indigo-300`}
+          />
+
+          {/* progress glow (blur aura) */}
+          <motion.div
+            style={{ height: fillHeight }}
+            className={`pointer-events-none absolute top-0 ${linePos} w-[10px] origin-top z-20
+              blur-md opacity-35 bg-gradient-to-b from-blue-800 via-blue-500 to-indigo-400`}
+          />
+
           <VerticalTimeline>
             {experiences.map((experience, index) => (
-              <ExperienceCard key={`experience-${index}`}
-              experience={experience}
-              />
+              <ExperienceCard key={`experience-${index}`} experience={experience} />
             ))}
           </VerticalTimeline>
         </div>
       </motion.div>
     </section>
-  )
-}
+  );
+};
 
-export default SectionWrapper(Experiences, "experiences")
+export default SectionWrapper(Experiences, "experiences");

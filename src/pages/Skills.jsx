@@ -17,7 +17,7 @@ const Skills = () => {
   return (
     <section id="skills" className="w-full px-6 py-16 mt-10">
       <p className="p-lead flex justify-center">
-        Introduction
+        Languages and software
       </p>
       <h2 className="flex justify-center">
         Skills
