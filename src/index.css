@@ -4,6 +4,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Balthazar&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Balthazar&family=Prata&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400;500;600;700;800&display=swap");
+
 @import "tailwindcss";
 @source "../index.html";
 @source "./**/*.{js,jsx,ts,tsx}";
@@ -36,8 +38,8 @@ body {
     font-family: "Balthazar", serif;
   }
   h3 {
-    @apply text-violet-200 font-semibold text-2xl;
-    font-family: "Balthazar", serif;
+    @apply text-violet-200 font-semibold text-xl;
+    font-family: "Prata", serif;
   }
   p {
     @apply text-lg;
@@ -95,6 +97,13 @@ body {
 
 .font-fraunces {
   font-family: "Fraunces", serif;
+}
+
+
+.font-mukta {
+  font-family: "Mukta", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .vertical-timeline::before { background: transparent !important; }

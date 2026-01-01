@@ -1,10 +1,10 @@
 import Orb from "../models/Orb.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import SectionWrapper from "../components/SectionWrapper";
 import Toggle from "../components/Toggle";
 import { motion } from "framer-motion";
-import { fadeIn, textVariant } from "../motion";
+import { textVariant } from "../motion";
 
 const pngs = import.meta.glob("../assets/tech/*.png", { eager: true });
 
@@ -23,38 +23,119 @@ const viewOptions = [
   { key: "technologies", label: "Technologies" },
 ];
 
+const DOMAIN_LABELS = {
+  backend: "Backend",
+  fullstack: "Full-stack",
+  infra: "Infrastructure",
+};
+
+const DOMAIN_ORDER = ["fullstack", "backend", "infra"];
+
+function TechnologiesGrouped({ labelList }) {
+  const grouped = labelList.reduce((acc, item) => {
+    const key = (item.domain || "other").toLowerCase();
+    (acc[key] ??= []).push(item);
+    return acc;
+  }, {});
+
+  return (
+    <div className="mt-8 max-w-5xl mx-auto space-y-6">
+      {DOMAIN_ORDER.filter((k) => grouped[k]?.length).map((k) => (
+        <div key={k} className="rounded-2xl border border-white/15 bg-white/5 p-5">
+          <h3 className="text-xl font-fraunces semibold text-violet-200 mb-3">
+            {DOMAIN_LABELS[k] ?? k}
+          </h3>
+
+          <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+            {grouped[k].map((tech) => (
+              <span
+                key={tech.label}
+                variant="secondary"
+                className="px-5 py-2 rounded-xl border border-white/20 bg-white/10 text-white/90"
+              >
+                {tech.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
 const Skills = () => {
   // default selected = first option => 3D
   const [view, setView] = useState(viewOptions[0].key);
 
-  // Add a "type" so we can filter for the 2D views
-  const skills = [
-    { name: "typescript", label: "TypeScript", imageScale: 1.4, type: "language" },
-    { name: "js", label: "JavaScript", imageScale: 1.5, type: "language" },
-    { name: "pythonn", label: "Python", imageScale: 1.5, type: "language" },
-    { name: "c", label: "C", imageScale: 1.3, type: "language" },
-    { name: "cpp", label: "C++", imageScale: 1.7, type: "language" },
-
-    { name: "nextjs", label: "Next.js", imageScale: 1.4, type: "technology" },
-    { name: "tailwindd", label: "TailwindCSS", imageScale: 1.5, type: "technology" },
-    { name: "nodejs", label: "Node.js", imageScale: 1.5, type: "technology" },
-    { name: "mongodb", label: "MongoDB", imageScale: 1.5, type: "technology" },
-    { name: "redis", label: "Redis", imageScale: 1.4, type: "technology" },
-    { name: "docker", label: "Docker", imageScale: 1.35, type: "technology" },
+  const orbSkills = [
+    { name: "typescript", label: "TypeScript", imageScale: 1.4 },
+    { name: "js", label: "JavaScript", imageScale: 1.5 },
+    { name: "pythonn", label: "Python", imageScale: 1.5 },
+    { name: "c", label: "C", imageScale: 1.3 },
+    { name: "cpp", label: "C++", imageScale: 1.7 },
+    { name: "nextjs", label: "Next.js", imageScale: 1.4 },
+    { name: "tailwindd", label: "TailwindCSS", imageScale: 1.5 },
+    { name: "nodejs", label: "Node.js", imageScale: 1.5 },
+    { name: "mongodb", label: "MongoDB", imageScale: 1.5 },
+    { name: "docker", label: "Docker", imageScale: 1.35 },
   ];
 
-  const maxPerRow = 7;
-  const spacing = 2;
+  // Complete list for 2D views (all your skills)
+  const allSkills = [
+    // Languages
+    { label: "TypeScript", type: "language" },
+    { label: "JavaScript", type: "language" },
+    { label: "Python", type: "language" },
+    { label: "C", type: "language" },
+    { label: "C++", type: "language" },
+    { label: "C#", type: "language" },
+    // Add more languages here
+    
+    // Technologies
+    { label: "Next.js", type: "technology", domain:"fullstack"},
+    { label: "React", type: "technology", domain:"fullstack"},
+    { label: "TailwindCSS", type: "technology", domain:"fullstack"},
+
+    { label: "Node.js", type: "technology", domain:"backend"},
+    { label: "MongoDB", type: "technology", domain:"backend"},
+    { label: "FastAPI", type: "technology", domain:"backend"},
+    { label: "Flask", type: "technology", domain:"backend"},
+    { label: "Django", type: "technology", domain:"backend"},
+    { label: "Redis", type: "technology", domain:"backend" },
+    { label: "PostgreSQL", type: "technology", domain:"backend" },
+    { label: "MySQL", type: "technology", domain:"backend" },
+
+    { label: "AWS", type: "technology", domain:"infra"},
+    { label: "Docker", type: "technology", domain:"infra"},
+    { label: "Git", type: "technology", domain:"infra"},
+    { label: "GitHub Actions", type: "technology", domain:"infra"},
+    { label: "Linux", type: "technology", domain:"infra"},
+    // Add more technologies here
+  ];
+
+  const [isSmall, setIsSmall] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)"); // tailwind sm
+    const onChange = () => setIsSmall(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  const maxPerRow = isSmall ? 4 : 7;
+  const spacing = isSmall ? 2 : 2;
 
   const labelList =
     view === "languages"
-      ? skills.filter((s) => s.type === "language")
+      ? allSkills.filter((s) => s.type === "language")
       : view === "technologies"
-      ? skills.filter((s) => s.type === "technology")
+      ? allSkills.filter((s) => s.type === "technology")
       : [];
 
   return (
-    <section id="skills" className="w-full px-6 py-16 mt-10">
+    <section id="skills" className="w-full px-4 sm:px-6 lg:px-10 py-12 sm:py-16 mt-10">
       <motion.div variants={textVariant()}>
         <p className="p-lead flex justify-center">Languages and software</p>
         <h2 className="flex justify-center">Skills</h2>
@@ -69,15 +150,15 @@ const Skills = () => {
 
       {/* 3D ORBS VIEW */}
       {view === "3d" ? (
-        <div className="w-full h-[650px] rounded-2xl overflow-hidden -mt-50 z-10">
-          <Canvas camera={{ position: [0, 0, 10], fov: 45 }}>
-            <ambientLight intensity={0.35} />
+        <div className="w-full h-[500px] sm:h-[560px] lg:h-[650px] rounded-2xl overflow-visible -mt-40 z-10">
+          <Canvas camera={{ position: [0, 0, window.innerWidth < 640 ? 12 : 10], fov: 45 }}>
+            <ambientLight intensity={0.5} />
             <directionalLight position={[4, 4, 3]} intensity={1.5} />
 
-            {skills.map((skill, index) => {
+            {orbSkills.map((skill, index) => {
               const row = Math.floor(index / maxPerRow);
               const col = index % maxPerRow;
-              const orbsInRow = Math.min(maxPerRow, skills.length - row * maxPerRow);
+              const orbsInRow = Math.min(maxPerRow, orbSkills.length - row * maxPerRow);
               const xOffset = -((orbsInRow - 1) * spacing) / 2;
 
               return (
@@ -94,29 +175,32 @@ const Skills = () => {
           </Canvas>
         </div>
       ) : (
-        /* 2D LABEL VIEW (Languages or Technologies) */
+          /* 2D LABEL VIEW (Languages or Technologies) */
         <div className="mt-10">
-          <div className="text-center text-4xl font-semibold text-white">
+          <div className="text-center text-3xl font-semibold text-white ">
             {view === "languages" ? "Languages" : "Technologies"}
           </div>
+
           <div className="mt-3 text-center text-white/60">
-            {view === "languages"
-              ? "Programming languages I use"
-              : "Frameworks, tools, and platforms I use"}
+            {view === "languages" ? "" : ""}
           </div>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            {labelList.map((s) => (
-              <span
-                key={s.name}
-                className="px-6 py-3 rounded-xl border border-white/30 bg-white/10 text-white/90"
-              >
-                {s.label}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
+          {view === "languages" ? (
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              {labelList.map((s) => (
+                <span
+                  key={s.label}
+                  className="px-6 py-3 rounded-xl border border-white/30 bg-white/10 text-white/90"
+                >
+                  {s.label}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <TechnologiesGrouped labelList={labelList} />
+            )}
+            </div>
+          )}
     </section>
   );
 };

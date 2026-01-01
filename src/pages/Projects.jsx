@@ -8,7 +8,7 @@ const ProjectCard = ({ index, name, description, tags, image, source_code_link})
   return (
     <motion.div 
       variants={fadeIn("up", "spring", index * 0.5, 0.75)}
-      className=" sm:w-[360px] w-full"
+      className=" w-[260px] sm:w-[460px] w-full"
     >
       <div className="group relative w-full overflow-hidden rounded-2xl p-[1px]">
         <span className="pointer-events-none absolute inset-0 rounded-2xl bg-slate-700" />
