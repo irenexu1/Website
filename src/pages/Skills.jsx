@@ -153,7 +153,7 @@ const Skills = () => {
         <div className="w-full h-[500px] sm:h-[560px] lg:h-[650px] rounded-2xl overflow-visible -mt-40 z-10">
           <Canvas
             frameloop="demand" 
-            dpr={[1, 1.5]}
+            dpr={1}
             camera={{ position: [0, 0, window.innerWidth < 640 ? 12 : 10], fov: 45 }}>
             <ambientLight intensity={0.5} />
             <directionalLight position={[4, 4, 3]} intensity={1.5} />

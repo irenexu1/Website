@@ -65,9 +65,11 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
     dragging.current = false;
     // Trigger wobble when drag stops
     const totalVel = Math.abs(velocity.current.x) + Math.abs(velocity.current.y);
-    wobbleRef.current.strength = Math.min(totalVel * 2, 0.015);
-    wobbleRef.current.decaying = true;
+    const strength = Math.min(totalVel * 2, 0.015);
+
+    wobbleRef.current.strength = strength
     wobbleRef.current.phase = 0;
+    wobbleRef.current.decaying = strength > 0.0001;
     e.target.releasePointerCapture?.(e.pointerId)
     invalidate();
    } 
@@ -158,7 +160,7 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
   <group ref={ref} position={position} 
     onPointerDown={onPointerDown}
     onPointerUp={onPointerUp}
-    onPointerLeave={(e) => { onPointerUp(e); setHovered(false); invalidate();}}
+    onPointerLeave={(e) => { setHovered(false); invalidate();}}
     onPointerEnter={(e) => {setHovered(true); invalidate();}}
     onPointerMove={onPointerMove}
     {...props} dispose={null}>
