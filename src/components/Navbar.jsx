@@ -14,11 +14,11 @@ const Navbar = () => {
         <a href="#about" className="text-white hover:text-violet-300">
           About
         </a>
-        <a href="#skills" className="text-white hover:text-violet-300">
-          Skills
-        </a>
         <a href="#experiences" className="text-white hover:text-violet-300">
           Experiences
+        </a>
+        <a href="#skills" className="text-white hover:text-violet-300">
+          Skills
         </a>
         <a href="#projects" className="text-white hover:text-violet-300">
           Projects

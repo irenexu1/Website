@@ -110,6 +110,22 @@ body {
   height: 12px !important;
 }
 
+/* Desktop: two-column timeline */
+@media (min-width: 1170px) {
+  .vertical-timeline--two-columns::before {
+    left: 50% !important;
+    margin-left: 0 !important;         
+    transform: translateX(-50%);
+  }
+
+  .vertical-timeline--two-columns .vertical-timeline-element-icon {
+    left: 50% !important;
+    margin-left: 0 !important;         
+    transform: translateX(-50%);
+  }
+}
+
+
 
 
 

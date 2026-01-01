@@ -14,12 +14,12 @@ const App = () => {
             <About />
           </section>
 
-          <section id ="skills">
-            <Skills />
-          </section>
-
           <section id ="experiences" className="bg-black">
             <Experiences/>
+          </section>
+
+          <section id ="skills">
+            <Skills />
           </section>
 
           <section id ="projects">

@@ -10,23 +10,11 @@ const ExperienceCard = ({ experience }) => (
   <VerticalTimelineElement
     contentStyle={{ background: "#1F2542", color: "#ffffff", boxShadow: "0 2px #ECCFFF" }}
     contentArrowStyle={{ borderRight: "7px solid #232631" }}
-    iconStyle={{
-  width: "20px",
-  height: "20px",
-  borderRadius: "999px",
-  background: "#2c2c59",
-
-  // 2 rings:
-  // - first (white/gray) ring closer in
-  // - second (black) ring outside it
-  boxShadow: "0 0 0 1px rgba(255,255,255,0.7), 0 0 0 10px #000",
-
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}}
+    iconStyle={{ width: "20px", height: "20px", borderRadius: "999px", background: "#2c2c59",
+    // 2 rings: first (white/gray) ring closer in, second (black) ring outside it
+    boxShadow: "0 0 0 1px rgba(255,255,255,0.7), 0 0 0 12px #000", 
+    display: "flex", alignItems: "center", justifyContent: "center", }}
     date={experience.date}
-    
   >
     <div>
       <h3 className="font-semibold">{experience.title}</h3>
