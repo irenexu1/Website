@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite"; // or whatever plugin you actually 
 
 
 export default defineConfig({
-  base: '/website/',
+  base: '/Website/',
   plugins: [react(), tailwindcss()],
   assetsInclude: ["**/*.glb"],
   server: {
