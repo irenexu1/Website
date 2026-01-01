@@ -11,18 +11,16 @@ function getSharedMats(materials) {
 
   const shell = materials.shell.clone();
     shell.transparent = true;
-    shell.opacity = 0.8;
-    shell.color.set('#968cff'); 
-    shell.emissive.set('#adbfff');
-    shell.emissiveIntensity = 0.9;
+    shell.opacity = 0.6;
+    shell.color.set('#adbfff');
+    shell.emissive.set('#D6E6FF');
+    shell.emissiveIntensity = 0.6;
+
     
-  const core = materials.material.clone();
+    const core = new THREE.MeshBasicMaterial({ color: "#ADC9FF" });
+    const frame = new THREE.MeshBasicMaterial({ color: "#ffffff"});
+
     
-  const frame = materials.frame.clone();
-    frame.color.set('#e3f2ff'); 
-    frame.emissive.set('#b5c4ff');
-    frame.emissiveIntensity = 4;
-    frame.toneMapped = true;
 
   sharedMats = {shell, core, frame};
   return sharedMats;
@@ -86,7 +84,7 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
     const vy = dx * sensitiviy
     const vx = dy * sensitiviy
 
-    // tweak sensitivity to taste
+    // tweak sensitivity here
     spinRef.current.rotation.y += vy
     spinRef.current.rotation.x += vx
 
