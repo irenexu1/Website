@@ -1,5 +1,5 @@
-import { useMemo, useRef, useState } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useMemo, useRef, useState, useEffect } from "react";
+import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { useGLTF, useAnimations, Decal, Html } from '@react-three/drei'
 import * as THREE from "three";
 
@@ -27,6 +27,8 @@ function makeTextTexture(text) {
 
 export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1.5, position = [0, 0, 0], onSelect, ...props}) {
    const ref = useRef();
+   const billboardRef = useRef();
+   const { camera } = useThree();
 
    const spinRef = useRef();
 
@@ -116,6 +118,10 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
 
    useFrame(({clock}, delta) => {
     if (!ref.current) return;
+
+    if (billboardRef.current) {
+      billboardRef.current.lookAt(camera.position);
+    }
     
     // Move upward when hovered
     const targetY = hovered ? position[1] + 0.3 : position[1];
@@ -167,6 +173,7 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
     onPointerEnter={() => setHovered(true)}
     onPointerMove={onPointerMove}
     {...props} dispose={null}>
+    <group ref={billboardRef}>  
     <group ref={spinRef}>
       <group name="Sketchfab_Scene">
         <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, 0]}>
@@ -217,9 +224,10 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
         </group>
       </group>
     </group>
+    </group>
   </group>
   {label && (
-    <Html position={[position[0], position[1] - 1.5, position[2]]} center distanceFactor={10}>
+    <Html position={[position[0], position[1] - 1.0, position[2]]} center distanceFactor={10}>
       <div style={{ 
         color: 'white', 
         fontSize: '14px',

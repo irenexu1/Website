@@ -29,7 +29,7 @@ const About = () => {
 
         <motion.p variants={fadeIn("", "", 0.1, 1)} >
           Hey! I’m Irene, a University of Waterloo student passionate about creating software thats beautiful, user-friendly, and 
-          with efficent scalable backends; combining strong problem-solving with an eye for design to solve
+          with efficent scalable backends. I aim to combining strong problem-solving with an eye for design to solve
           real-world problems.
         </motion.p>
         <motion.p variants={fadeIn("", "", 0.1, 1)} >

@@ -96,7 +96,7 @@ const Projects = () => {
 
       <div className="w-full mt-4 flex flex-col">
         <motion.p variants={fadeIn("", "", 0.1, 1)} className="mt-3 text-white text-[17px] max-w-3xl leading-[30px]">
-          Projects coming soon... 
+           
         </motion.p>
       </div>
 
