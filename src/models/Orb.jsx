@@ -1,34 +1,38 @@
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
-import { useGLTF, useAnimations, Decal, Html } from '@react-three/drei'
+import { useGLTF, Decal, Html } from '@react-three/drei'
 import * as THREE from "three";
 
 
-function makeTextTexture(text) {
-  const size = 512;
-  const c = document.createElement("canvas");
-  c.width = size;
-  c.height = size;
-  const ctx = c.getContext("2d");
+let sharedMats = null;
 
-  ctx.clearRect(0, 0, size, size); // transparent background
-  ctx.fillStyle = "#ff1a8c"; // Change to any color: "#ffaa00", "#00ff00", etc.
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.font = "bold 72px Arial";
-  ctx.fillText(text, size / 2, size / 2);
+function getSharedMats(materials) {
+  if (sharedMats) return sharedMats;
 
-  const tex = new THREE.CanvasTexture(c);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  tex.needsUpdate = true;
-  return tex;
+  const shell = materials.shell.clone();
+    shell.transparent = true;
+    shell.opacity = 0.8;
+    shell.color.set('#968cff'); 
+    shell.emissive.set('#adbfff');
+    shell.emissiveIntensity = 0.9;
+    
+  const core = materials.material.clone();
+    
+  const frame = materials.frame.clone();
+    frame.color.set('#e3f2ff'); 
+    frame.emissive.set('#b5c4ff');
+    frame.emissiveIntensity = 4;
+    frame.toneMapped = true;
+
+  sharedMats = {shell, core, frame};
+  return sharedMats;
 }
 
 
 export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1.5, position = [0, 0, 0], onSelect, ...props}) {
    const ref = useRef();
    const billboardRef = useRef();
-   const { camera } = useThree();
+   const { camera, invalidate } = useThree();
 
    const spinRef = useRef();
 
@@ -40,51 +44,24 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
    const wobbleRef = useRef({ phase: 0, decaying: false, strength: 0 })
    const [hovered, setHovered] = useState(false);
    
-   // Randomized animation parameters per orb
-   const animParams = useMemo(() => ({
-     speedY: 0.8 + Math.random() * 0.6,        // 0.8 to 1.4
-     speedX: 0.5 + Math.random() * 0.4,        // 0.5 to 0.9
-     amplitudeY: 0.03 + Math.random() * 0.03,  // 0.03 to 0.06 (reduced)
-     amplitudeX: 0.03 + Math.random() * 0.04,  // 0.03 to 0.07
-     phaseY: Math.random() * Math.PI * 2,      // random start phase
-     phaseX: Math.random() * Math.PI * 2,
-   }), [id])
-
    // Load image texture if provided
    const imageTexture = imagePath ? useLoader(THREE.TextureLoader, imagePath) : null;
 
    const { nodes, materials } = useGLTF('cyber_orb.glb');
    
-   const mats = useMemo(() => {
-    const shell = materials.shell.clone();
-    shell.transparent = true;
-    shell.opacity = 0.8;
-    shell.color.set('#968cff'); 
-    shell.emissive.set('#adbfff');
-    shell.emissiveIntensity = 0.9;
-    
-    const core = materials.material.clone();
-    
-    const frame = materials.frame.clone();
-    frame.color.set('#e3f2ff'); 
-    frame.emissive.set('#b5c4ff');
-    frame.emissiveIntensity = 4;
-    frame.toneMapped = true;
-    
-    return {shell, core, frame,};
-   }, [materials]);
-   
-   const labelTex = useMemo(() => makeTextTexture(label), [label]);
+   const mats = useMemo(() => getSharedMats(materials), [materials]);
 
    const onPointerDown = (e) => {
     e.stopPropagation();
     dragging.current = true;
     last.current.x = e.clientX;
     last.current.y = e.clientY;
-    e.target.setPointerCapture?.(e.pointerId)
+    e.target.setPointerCapture(e.pointerId);
+    invalidate();
    }
 
    const onPointerUp = (e) => {
+    e.stopPropagation();
     dragging.current = false;
     // Trigger wobble when drag stops
     const totalVel = Math.abs(velocity.current.x) + Math.abs(velocity.current.y);
@@ -92,6 +69,7 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
     wobbleRef.current.decaying = true;
     wobbleRef.current.phase = 0;
     e.target.releasePointerCapture?.(e.pointerId)
+    invalidate();
    } 
 
    const onPointerMove = (e) => {
@@ -113,6 +91,7 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
     // store velocity for momentum (simple smoothing)
     velocity.current.y = vy
     velocity.current.x = vx
+    invalidate();
    }
 
 
@@ -160,7 +139,17 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
             spinRef.current.rotation.z = 0;
           }
         }
-    }
+      }
+      
+      const moving =
+        dragging.current ||
+        wobbleRef.current.decaying ||
+        velocity.current.x !== 0 ||
+        velocity.current.y !== 0 ||
+        Math.abs(ref.current.position.y - targetY) > 0.0005 ||
+        Math.abs(ref.current.position.x - targetX) > 0.0005;
+
+      if (moving) invalidate();
    });
 
 
@@ -169,8 +158,8 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
   <group ref={ref} position={position} 
     onPointerDown={onPointerDown}
     onPointerUp={onPointerUp}
-    onPointerLeave={(e) => { onPointerUp(e); setHovered(false); }}
-    onPointerEnter={() => setHovered(true)}
+    onPointerLeave={(e) => { onPointerUp(e); setHovered(false); invalidate();}}
+    onPointerEnter={(e) => {setHovered(true); invalidate();}}
     onPointerMove={onPointerMove}
     {...props} dispose={null}>
     <group ref={billboardRef}>  
@@ -182,8 +171,6 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
               <group name="Sphere001_0">
                 <mesh
                   name="Object_4"
-                  castShadow
-                  receiveShadow
                   geometry={nodes.Object_4.geometry}
                   material={mats.shell}
                 >
@@ -203,8 +190,6 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
               <group name="Sphere002_1" scale={0.72}>
                 <mesh
                   name="Object_6"
-                  castShadow
-                  receiveShadow
                   geometry={nodes.Object_6.geometry}
                   material={mats.core}
                 />
@@ -213,8 +198,6 @@ export default function Orb({ id = 0, label = "", imagePath = "", imageScale = 1
               <group name="Sphere004_3">
                 <mesh
                   name="Object_9"
-                  castShadow
-                  receiveShadow
                   geometry={nodes.Object_9.geometry}
                   material={mats.frame}
                 />
