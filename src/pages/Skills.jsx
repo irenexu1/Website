@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import SectionWrapper from "../components/SectionWrapper";
 import Toggle from "../components/Toggle";
+import { motion } from "framer-motion";
+import { fadeIn, textVariant } from "../motion";
 
 const pngs = import.meta.glob("../assets/tech/*.png", { eager: true });
 
@@ -53,13 +55,17 @@ const Skills = () => {
 
   return (
     <section id="skills" className="w-full px-6 py-16 mt-10">
-      <p className="p-lead flex justify-center">Languages and software</p>
-      <h2 className="flex justify-center">Skills</h2>
+      <motion.div variants={textVariant()}>
+        <p className="p-lead flex justify-center">Languages and software</p>
+        <h2 className="flex justify-center">Skills</h2>
 
-      {/* The segmented control */}
-      <div className="mt-6 relative z-20">
-        <Toggle options={viewOptions} value={view} onChange={setView} />
-      </div>
+        {/* The segmented control */}
+        <div className="mt-6 relative z-20">
+          <Toggle options={viewOptions} value={view} onChange={setView} />
+        </div>
+
+      </motion.div>
+
 
       {/* 3D ORBS VIEW */}
       {view === "3d" ? (
