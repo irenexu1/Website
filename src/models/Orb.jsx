@@ -11,10 +11,10 @@ function getSharedMats(materials) {
 
   const shell = materials.shell.clone();
     shell.transparent = true;
-    shell.opacity = 0.6;
+    shell.opacity = 0.75;
     shell.color.set('#adbfff');
     shell.emissive.set('#D6E6FF');
-    shell.emissiveIntensity = 0.6;
+    shell.emissiveIntensity = 0.7;
 
     
     const core = new THREE.MeshBasicMaterial({ color: "#ADC9FF" });
