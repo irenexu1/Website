@@ -1,7 +1,7 @@
 # Irene Xu - Portfolio Website
 
+https://irenexu1.github.io/Website/
 My personal portfolio website! Feel free to check out some of my work.
-
 Built with React and Three.js, featuring 3D elements, smooth animations, and a responsive design.
 
 ![React](https://img.shields.io/badge/React-19.x-61DAFB?logo=react)
@@ -25,6 +25,3 @@ Built with React and Three.js, featuring 3D elements, smooth animations, and a r
 - Three.js / React Three Fiber
 - Framer Motion
 - EmailJS
-
-
-Built with ❤️ by Irene Xu
