@@ -84,7 +84,7 @@ const ProjectCard = ({ index, name, description, tags, image, source_code_link})
 
 const Projects = () => {
   return (
-    <section id="projects" className="px-6 py-16 ml-20">
+    <section id="projects" className="px-6 pb-15 ml-20 translate-y-20">
       <motion.div variants={textVariant()}> 
         <p className="p-lead flex leading-[30px]">
           Featured work
@@ -100,7 +100,7 @@ const Projects = () => {
         </motion.p>
       </div>
 
-      <div className="mt-20 flex flex-wrap gap-7">
+      <div className="mt-8 flex flex-wrap gap-7">
         {projects.map((project, index) => (
           <ProjectCard key={`project-${index}`} index={index} {...project} />
         ))}

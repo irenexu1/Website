@@ -1,6 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Rosarivo:ital@0;1&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Almendra+SC&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Balthazar&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Balthazar&family=Prata&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap");
@@ -75,15 +73,6 @@ body {
 }
 
 
-.font-rosarivo {
-  font-family: "Rosarivo", serif;
-}
-
-.font-almendra {
-  font-family: "Almendra SC", serif;
-  letter-spacing: 0.08em;
-}
-
 .font-balthazar {
   font-family: "Balthazar", serif;
 
@@ -94,11 +83,9 @@ body {
   font-style: normal;
 }
 
-
 .font-fraunces {
   font-family: "Fraunces", serif;
 }
-
 
 .font-mukta {
   font-family: "Mukta", sans-serif;
@@ -106,12 +93,13 @@ body {
   font-style: normal;
 }
 
+
 .vertical-timeline::before { background: transparent !important; }
 
 .vertical-timeline-element-icon{
   position: relative;
   top: 22px !important;
-  margin-left: -12px !important; /* change if you change size */
+  margin-left: 12px !important; /* change if you change size */
 }
 
 .vertical-timeline-element-icon svg{
@@ -119,20 +107,31 @@ body {
   height: 12px !important;
 }
 
-/* Desktop: two-column timeline */
-@media (min-width: 1170px) {
-  .vertical-timeline--two-columns::before {
-    left: 50% !important;
-    margin-left: 0 !important;         
-    transform: translateX(-50%);
-  }
+.vertical-timeline {
+  width: 100% !important;
+  max-width: 1300px !important;
+  margin: 0 auto !important;
+}
 
-  .vertical-timeline--two-columns .vertical-timeline-element-icon {
-    left: 50% !important;
-    margin-left: 0 !important;         
-    transform: translateX(-50%);
+/* MOBILE: keep the line + cards inside the viewport */
+@media (max-width: 767px) {
+  .vertical-timeline--one-column-left .vertical-timeline-element-content {
+    margin-left: 50px !important;                 /* distance from line */
+    width: auto !important;          /* prevents overflow */
+    max-width: calc(100% - 80px) !important;      /* hard cap so it can't overflow */
+    box-sizing: border-box !important;
   }
 }
+
+/* DESKTOP+: allow bigger “far out” spacing safely */
+@media (min-width: 768px) {
+  .vertical-timeline--one-column-left .vertical-timeline-element-content {
+    margin-left: clamp(70px, 8vw, 220px) !important;
+    width: calc(100% - (clamp(70px, 8vw, 220px) + 16px)) !important;
+  }
+}
+
+
 
 
 

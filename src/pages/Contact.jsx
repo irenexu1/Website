@@ -50,7 +50,7 @@ const Contact = () => {
   }
   
   return (
-    <section id="contact" className="px-6 py-16 xl:mt-12 xl:flex-row ml-0 md:ml-20 flex-col-reverse flex gap-10 overflow-hidden">
+    <section id="contact" className="px-6 py-20 xl:mt-12 xl:flex-row ml-0 md:ml-20 flex-col-reverse flex gap-10 overflow-hidden">
       <motion.div 
         variants={slideIn('left', "tween", 0.2, 1)}
         className="flex-[0.75] max-w-none md:max-w-3xl bg-slate-900 p-8 rounded-2xl"

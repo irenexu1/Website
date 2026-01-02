@@ -135,7 +135,7 @@ const Skills = () => {
       : [];
 
   return (
-    <section id="skills" className="w-full px-4 sm:px-6 lg:px-10 py-12 sm:py-16 mt-10">
+    <section id="skills" className="w-full px-4 sm:px-6 lg:px-10 pt-8 sm:pt-10 mt-10 translate-y-15">
       <motion.div variants={textVariant()}>
         <p className="p-lead flex justify-center">Languages and software</p>
         <h2 className="flex justify-center">Skills</h2>

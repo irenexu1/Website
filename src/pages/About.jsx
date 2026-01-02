@@ -7,7 +7,7 @@ import SectionWrapper from "../components/SectionWrapper";
 const About = () => {
   return (
     <section
-      id="about" className="mx-16  flex flex-col md:flex-row gap-8 md:gap-16 pb-16">
+      id="about" className="mx-16 flex flex-col md:flex-row gap-8 md:gap-16">
       <div className="w-full md:w-2/5 flex justify-end flex-shrink-0">
         <motion.img 
           src={profile} 
