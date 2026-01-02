@@ -1,16 +1,30 @@
-# React + Vite
+# Irene Xu - Portfolio Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+My personal portfolio website! Feel free to check out some of my work.
 
-Currently, two official plugins are available:
+Built with React and Three.js, featuring 3D elements, smooth animations, and a responsive design.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![React](https://img.shields.io/badge/React-19.x-61DAFB?logo=react)
+![Vite](https://img.shields.io/badge/Vite-7.x-646CFF?logo=vite)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.x-06B6D4?logo=tailwindcss)
+![Three.js](https://img.shields.io/badge/Three.js-r9-black?logo=threedotjs)
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Interactive 3D Elements** - Draggable 3D orbs using React Three Fiber
+- **Smooth Animations** - Page transitions and scroll animations powered by Framer Motion
+- **Responsive Design** - Fully responsive layout optimized for all screen sizes
+- **Contact Form** - Functional email contact form using EmailJS
+- **Timeline Experience** - Interactive vertical timeline for work experiences
+- **Modern UI** - Clean, professional design with custom fonts and glassmorphism effects
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech Stack
+- React (Vite)
+- TailwindCSS
+- Three.js / React Three Fiber
+- Framer Motion
+- EmailJS
+
+
+Built with ❤️ by Irene Xu
